@@ -7,7 +7,7 @@ A church management app, built module by module. **Module 1 is Sermons**: plan a
 - **Pastor console**: pointers, verse buttons, video buttons, camera, live monitor, timer, keyboard and presentation-clicker shortcuts.
 - **Display window**: a second browser window on the projector or TV, driven by the console. If it is reloaded or closed, it recovers its current state.
 
-> Status: working prototype (Phase 1–2 of [docs/ROADMAP.md](docs/ROADMAP.md)). Data is stored locally on the computer you use. There is no login or cloud sync yet.
+> Status: working prototype (Phase 1–2 of [docs/ROADMAP.md](docs/ROADMAP.md)), protected by a single admin login. Data is stored locally on the computer you use; there is no cloud sync yet.
 
 ## Run it
 
@@ -20,6 +20,20 @@ npm start            # http://localhost:3000
 ```
 
 For development: `npm run dev`.
+
+## Admin login
+
+Every page requires the admin login. Set three environment variables, in `.env.local` locally or under *Project → Settings → Environment Variables* on Vercel:
+
+```bash
+npm run auth:hash -- 'your-new-password'   # prints ADMIN_USERNAME, ADMIN_PASSWORD_HASH, AUTH_SECRET
+```
+
+To change the password, run the command again and replace `ADMIN_PASSWORD_HASH`, then redeploy. Keep `AUTH_SECRET` unchanged, unless you want to sign out every browser. See [D-010](docs/DECISIONS.md).
+
+## Hosting
+
+The app is deployed on Vercel from the `main` branch; every push redeploys. Sermons and media are still stored **in the browser of the computer you use** (D-002), so use the same computer and browser for planning and presenting until cloud sync arrives.
 
 ## Using it on Sunday
 
@@ -43,7 +57,7 @@ For development: `npm run dev`.
 ```bash
 npm test                         # unit tests (reference parser, slides)
 npm start -- -p 3100 &           # then:
-npm run test:e2e                 # browser test: planner → console → display (17 checks)
+E2E_PASSWORD='…' npm run test:e2e   # browser test: login → planner → console → display (24 checks)
 ```
 
 ## Project docs

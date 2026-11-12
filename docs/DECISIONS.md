@@ -33,3 +33,9 @@ Each entry says what we decided, why, and what would make us revisit it.
 
 ### D-009: Short Telugu book names for display
 - **Why**: "రోమా 8:28" reads better on screen than "రోమీయులకు రాసిన పత్రిక 8:28". The long forms stay as aliases for search. Needs native-speaker review.
+
+### D-010: Single admin login with a signed cookie (no auth provider yet)
+- **What**: `ADMIN_USERNAME` + scrypt `ADMIN_PASSWORD_HASH` + `AUTH_SECRET`, all set as environment variables. A successful login sets an HMAC-signed, httpOnly, SameSite=Lax, Secure cookie (30 days, renewed automatically so it never expires during a service). `src/proxy.ts` protects every page and API. Login and logout, Next static files and the public-domain `/bibles/*` data are exempt. If the variables are missing, the app stays locked.
+- **Why**: one admin user for the prototype. There's no user database to run and no third-party account, and it works the same on Vercel and on the church laptop.
+- **Limits**: one account, no password-reset flow (generate a new hash with `npm run auth:hash`), and the login throttle (5 failures per 15 minutes per IP) is per server instance.
+- **Revisit when**: we add the media-person role or several churches. Then move to a real auth provider with per-user accounts and roles, together with the cloud database (Phase 4).

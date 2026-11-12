@@ -1,6 +1,6 @@
 // End-to-end smoke test: planner -> console -> display window.
-// Usage: npm run build && npm start -- -p 3100   (in another terminal)
-//        npm run test:e2e [screenshot-dir] [deviceScaleFactor]
+// Usage: npm run build && npm start -- -p 3100   (in another terminal, with .env.local)
+//        E2E_PASSWORD='<admin password>' npm run test:e2e [screenshot-dir] [deviceScaleFactor]
 // Uses fake camera + fixtures; run against a fresh browser profile.
 const { chromium } = require("playwright");
 const path = require("node:path");
@@ -18,6 +18,28 @@ fs.mkdirSync(OUT, { recursive: true });
   const errors = [];
   page.on("pageerror", (e) => errors.push("console page: " + e.message));
   const ok = (cond, msg) => { console.log(`${cond ? "PASS" : "FAIL"}  ${msg}`); if (!cond) process.exitCode = 1; };
+
+  // 0. Auth: everything is behind the admin login
+  const USER = process.env.E2E_USERNAME || "admin";
+  const PASS = process.env.E2E_PASSWORD;
+  if (!PASS) throw new Error("Set E2E_PASSWORD (and optionally E2E_USERNAME) to the admin login");
+  await page.goto(BASE + "/library");
+  ok(page.url().includes("/login?next=%2Flibrary"), "signed-out visit redirects to /login");
+  const api = await ctx.request.post(BASE + "/api/auth/logout");
+  ok(api.ok(), "logout API reachable");
+  const sermonsPage = await ctx.request.get(BASE + "/sermons/x", { maxRedirects: 0 });
+  ok(sermonsPage.status() === 307, "pages are protected (307 to login)");
+  await page.getByLabel("Username").fill(USER);
+  await page.getByLabel("Password").fill("wrong-password");
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await page.getByText("Wrong username or password").waitFor({ timeout: 5000 });
+  ok(true, "wrong password is rejected");
+  await page.getByLabel("Password").fill(PASS);
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await page.waitForURL(/\/library$/);
+  ok(true, "admin signs in and returns to the requested page");
+  const cookie = (await ctx.cookies()).find((c) => c.name === "cm_session");
+  ok(cookie && cookie.httpOnly && cookie.sameSite === "Lax", "session cookie is httpOnly + SameSite=Lax");
 
   // 1. Dashboard + sample sermon
   await page.goto(BASE + "/");
@@ -143,6 +165,13 @@ fs.mkdirSync(OUT, { recursive: true });
   await page.getByTestId("console-media").filter({ hasText: "YouTube" }).click();
   await display.locator("iframe[src*='youtube']").waitFor({ timeout: 5000 });
   ok((await display.locator("iframe").getAttribute("src")).includes("start=10"), "YouTube embed starts at the trim point");
+
+  // 12. Sign out
+  await page.goto(BASE + "/");
+  await page.getByRole("button", { name: "Sign out" }).click();
+  await page.waitForURL(/\/login/);
+  const locked = await ctx.request.get(BASE + "/", { maxRedirects: 0 });
+  ok(locked.status() === 307, "after sign-out the app is locked again");
 
   ok(errors.length === 0, `no page errors ${errors.join(" | ")}`);
   await browser.close();

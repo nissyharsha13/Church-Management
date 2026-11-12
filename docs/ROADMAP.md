@@ -39,7 +39,9 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - ⬜ Verse overlays on the livestream output
 
 ## Phase 4: Multi-device & accounts
-- ⬜ Cloud database + login (pastor, media person, admin roles), plus sync of the local data
+- ✅ Single admin login (D-010) and hosting on Vercel
+- ⬜ Per-user accounts and roles (pastor, media person, admin) via an auth provider
+- ⬜ Cloud database + sync of the local data
 - ⬜ Network transport (WebSocket / realtime) so a tablet or second laptop can control the screen. The protocol is already transport-agnostic (D-004)
 - ⬜ Media-person console alongside the pastor console (both control the screen; the last action wins)
 - ⬜ Stage/confidence display for the pastor (notes + timer + what's on screen)

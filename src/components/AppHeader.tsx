@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useLiveQuery } from "dexie-react-hooks";
-import { BookOpen, Church, Film, Settings } from "lucide-react";
+import { BookOpen, Church, Film, LogOut, Settings } from "lucide-react";
 import { db, DEFAULT_CHURCH_ID, DEFAULT_SETTINGS } from "@/lib/db";
 import { useT, useUILang } from "@/lib/i18n";
 
@@ -38,6 +38,15 @@ export function AppHeader() {
         </nav>
         <button onClick={toggleLang} className="btn-secondary" title={t("uiLanguage")}>
           {lang === "en" ? "తెలుగు" : "English"}
+        </button>
+        <button
+          className="btn-ghost"
+          title={t("signOut")}
+          // Full reload on purpose: drops any cached pages after sign-out.
+          // eslint-disable-next-line @next/next/no-location-assign-relative-destination
+          onClick={async () => { await fetch("/api/auth/logout", { method: "POST" }); window.location.assign("/login"); }}
+        >
+          <LogOut className="h-4 w-4" /><span className="hidden md:inline">{t("signOut")}</span>
         </button>
       </div>
     </header>

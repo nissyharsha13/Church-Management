@@ -99,6 +99,14 @@ export const dictionary = {
   offlineBibles: { en: "Offline Bibles", te: "ఆఫ్‌లైన్ బైబిళ్లు" },
   downloadOffline: { en: "Download for offline use", te: "ఆఫ్‌లైన్ కోసం డౌన్‌లోడ్" },
   save: { en: "Save", te: "సేవ్" },
+  // auth
+  signIn: { en: "Sign in", te: "సైన్ ఇన్" },
+  signOut: { en: "Sign out", te: "సైన్ అవుట్" },
+  username: { en: "Username", te: "వినియోగదారు పేరు" },
+  password: { en: "Password", te: "పాస్‌వర్డ్" },
+  invalidCredentials: { en: "Wrong username or password", te: "వినియోగదారు పేరు లేదా పాస్‌వర్డ్ తప్పు" },
+  tooManyAttempts: { en: "Too many attempts. Try again in 15 minutes.", te: "చాలా ప్రయత్నాలు. 15 నిమిషాల తర్వాత మళ్ళీ ప్రయత్నించండి." },
+  loginNotConfigured: { en: "Login is not configured on the server (ADMIN_USERNAME, ADMIN_PASSWORD_HASH, AUTH_SECRET).", te: "సర్వర్‌లో లాగిన్ సెట్ చేయలేదు." },
 } as const;
 
 export type DictKey = keyof typeof dictionary;
