@@ -1,0 +1,1529 @@
+[
+ {
+  "id": "GEN",
+  "order": 1,
+  "osis": "Gen",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Genesis",
+    "aliases": [
+     "Gen",
+     "Ge",
+     "Gn"
+    ]
+   },
+   "te": {
+    "name": "ఆది",
+    "aliases": [
+     "ఆదికాండం",
+     "ఆదికాండము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "EXO",
+  "order": 2,
+  "osis": "Exod",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Exodus",
+    "aliases": [
+     "Exod",
+     "Exo",
+     "Ex"
+    ]
+   },
+   "te": {
+    "name": "నిర్గమ",
+    "aliases": [
+     "నిర్గమకాండం",
+     "నిర్గ",
+     "నిర్గమకాండము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "LEV",
+  "order": 3,
+  "osis": "Lev",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Leviticus",
+    "aliases": [
+     "Lev",
+     "Le",
+     "Lv"
+    ]
+   },
+   "te": {
+    "name": "లేవీ",
+    "aliases": [
+     "లేవీకాండం",
+     "లేవీయకాండము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "NUM",
+  "order": 4,
+  "osis": "Num",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Numbers",
+    "aliases": [
+     "Num",
+     "Nu",
+     "Nm",
+     "Nb"
+    ]
+   },
+   "te": {
+    "name": "సంఖ్యా",
+    "aliases": [
+     "సంఖ్యాకాండం",
+     "సంఖ్యాకాండము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "DEU",
+  "order": 5,
+  "osis": "Deut",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Deuteronomy",
+    "aliases": [
+     "Deut",
+     "Deu",
+     "Dt",
+     "De"
+    ]
+   },
+   "te": {
+    "name": "ద్వితీ",
+    "aliases": [
+     "ద్వితీయోపదేశ కాండము",
+     "ద్వితీయోపదేశకాండమ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "JOS",
+  "order": 6,
+  "osis": "Josh",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Joshua",
+    "aliases": [
+     "Josh",
+     "Jos",
+     "Jsh"
+    ]
+   },
+   "te": {
+    "name": "యెహో",
+    "aliases": [
+     "యెహోషువ",
+     "యెహోషువా",
+     "యెహొషువ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "JDG",
+  "order": 7,
+  "osis": "Judg",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Judges",
+    "aliases": [
+     "Judg",
+     "Jdg",
+     "Jg",
+     "Jdgs"
+    ]
+   },
+   "te": {
+    "name": "న్యాయా",
+    "aliases": [
+     "న్యాయాధిపతులు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "RUT",
+  "order": 8,
+  "osis": "Ruth",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Ruth",
+    "aliases": [
+     "Ruth",
+     "Rut",
+     "Ru",
+     "Rth"
+    ]
+   },
+   "te": {
+    "name": "రూతు",
+    "aliases": []
+   }
+  }
+ },
+ {
+  "id": "1SA",
+  "order": 9,
+  "osis": "1Sam",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "1 Samuel",
+    "aliases": [
+     "1 Sam",
+     "1 Sa",
+     "1Sm",
+     "1 S"
+    ]
+   },
+   "te": {
+    "name": "1 సమూ",
+    "aliases": [
+     "1 సమూయేలు",
+     "1సమూ",
+     "సమూయేలు మొదటి గ్రంథము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "2SA",
+  "order": 10,
+  "osis": "2Sam",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "2 Samuel",
+    "aliases": [
+     "2 Sam",
+     "2 Sa",
+     "2Sm",
+     "2 S"
+    ]
+   },
+   "te": {
+    "name": "2 సమూ",
+    "aliases": [
+     "2 సమూయేలు",
+     "2సమూ",
+     "సమూయేలు రెండవ గ్రంథము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "1KI",
+  "order": 11,
+  "osis": "1Kgs",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "1 Kings",
+    "aliases": [
+     "1 Kgs",
+     "1 Ki",
+     "1 Kin",
+     "1K"
+    ]
+   },
+   "te": {
+    "name": "1 రాజులు",
+    "aliases": [
+     "1రాజులు",
+     "రాజులు మొదటి గ్రంథము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "2KI",
+  "order": 12,
+  "osis": "2Kgs",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "2 Kings",
+    "aliases": [
+     "2 Kgs",
+     "2 Ki",
+     "2 Kin",
+     "2K"
+    ]
+   },
+   "te": {
+    "name": "2 రాజులు",
+    "aliases": [
+     "2రాజులు",
+     "రాజులు రెండవ గ్రంథము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "1CH",
+  "order": 13,
+  "osis": "1Chr",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "1 Chronicles",
+    "aliases": [
+     "1 Chr",
+     "1 Ch",
+     "1 Chron"
+    ]
+   },
+   "te": {
+    "name": "1 దిన",
+    "aliases": [
+     "1 దినవృత్తాంతాలు",
+     "1దిన",
+     "దినవృత్తాంతములు మొదటి గ్రంథము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "2CH",
+  "order": 14,
+  "osis": "2Chr",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "2 Chronicles",
+    "aliases": [
+     "2 Chr",
+     "2 Ch",
+     "2 Chron"
+    ]
+   },
+   "te": {
+    "name": "2 దిన",
+    "aliases": [
+     "2 దినవృత్తాంతాలు",
+     "2దిన",
+     "దినవృత్తాంతములు రెండవ గ్రంథము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "EZR",
+  "order": 15,
+  "osis": "Ezra",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Ezra",
+    "aliases": [
+     "Ezra",
+     "Ezr",
+     "Ez"
+    ]
+   },
+   "te": {
+    "name": "ఎజ్రా",
+    "aliases": []
+   }
+  }
+ },
+ {
+  "id": "NEH",
+  "order": 16,
+  "osis": "Neh",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Nehemiah",
+    "aliases": [
+     "Neh",
+     "Ne"
+    ]
+   },
+   "te": {
+    "name": "నెహెమ్యా",
+    "aliases": [
+     "నెహె"
+    ]
+   }
+  }
+ },
+ {
+  "id": "EST",
+  "order": 17,
+  "osis": "Esth",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Esther",
+    "aliases": [
+     "Esth",
+     "Est",
+     "Es"
+    ]
+   },
+   "te": {
+    "name": "ఎస్తేరు",
+    "aliases": [
+     "ఎస్తే"
+    ]
+   }
+  }
+ },
+ {
+  "id": "JOB",
+  "order": 18,
+  "osis": "Job",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Job",
+    "aliases": [
+     "Job",
+     "Jb"
+    ]
+   },
+   "te": {
+    "name": "యోబు",
+    "aliases": [
+     "యోబు గ్రంథము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "PSA",
+  "order": 19,
+  "osis": "Ps",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Psalms",
+    "aliases": [
+     "Psalm",
+     "Ps",
+     "Psa",
+     "Pss",
+     "Psalter"
+    ]
+   },
+   "te": {
+    "name": "కీర్తన",
+    "aliases": [
+     "కీర్తనలు",
+     "కీర్త",
+     "కీర్తనల గ్రంథము"
+    ]
+   }
+  }
+ },
+ {
+  "id": "PRO",
+  "order": 20,
+  "osis": "Prov",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Proverbs",
+    "aliases": [
+     "Prov",
+     "Pro",
+     "Prv",
+     "Pr"
+    ]
+   },
+   "te": {
+    "name": "సామెత",
+    "aliases": [
+     "సామెతలు",
+     "సామె"
+    ]
+   }
+  }
+ },
+ {
+  "id": "ECC",
+  "order": 21,
+  "osis": "Eccl",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Ecclesiastes",
+    "aliases": [
+     "Eccl",
+     "Ecc",
+     "Eccles",
+     "Qoh"
+    ]
+   },
+   "te": {
+    "name": "ప్రసంగి",
+    "aliases": [
+     "ప్రస"
+    ]
+   }
+  }
+ },
+ {
+  "id": "SNG",
+  "order": 22,
+  "osis": "Song",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Song of Solomon",
+    "aliases": [
+     "Song",
+     "Song of Songs",
+     "SOS",
+     "Sg",
+     "Canticles"
+    ]
+   },
+   "te": {
+    "name": "పరమ",
+    "aliases": [
+     "పరమగీతం",
+     "పరమ గీతము",
+     "పరమగీతము "
+    ]
+   }
+  }
+ },
+ {
+  "id": "ISA",
+  "order": 23,
+  "osis": "Isa",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Isaiah",
+    "aliases": [
+     "Isa",
+     "Is"
+    ]
+   },
+   "te": {
+    "name": "యెషయా",
+    "aliases": [
+     "యెష",
+     "యెషయా గ్రంథము "
+    ]
+   }
+  }
+ },
+ {
+  "id": "JER",
+  "order": 24,
+  "osis": "Jer",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Jeremiah",
+    "aliases": [
+     "Jer",
+     "Je",
+     "Jr"
+    ]
+   },
+   "te": {
+    "name": "యిర్మీయా",
+    "aliases": [
+     "యిర్మీ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "LAM",
+  "order": 25,
+  "osis": "Lam",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Lamentations",
+    "aliases": [
+     "Lam",
+     "La"
+    ]
+   },
+   "te": {
+    "name": "విలాప వాక్యములు",
+    "aliases": [
+     "విలాపవాక్యాలు",
+     "విలాప",
+     "విలాపవాక్యములు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "EZK",
+  "order": 26,
+  "osis": "Ezek",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Ezekiel",
+    "aliases": [
+     "Ezek",
+     "Eze",
+     "Ezk"
+    ]
+   },
+   "te": {
+    "name": "యెహెజ్కేలు",
+    "aliases": [
+     "యెహె"
+    ]
+   }
+  }
+ },
+ {
+  "id": "DAN",
+  "order": 27,
+  "osis": "Dan",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Daniel",
+    "aliases": [
+     "Dan",
+     "Da",
+     "Dn"
+    ]
+   },
+   "te": {
+    "name": "దానియేలు",
+    "aliases": [
+     "దాని"
+    ]
+   }
+  }
+ },
+ {
+  "id": "HOS",
+  "order": 28,
+  "osis": "Hos",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Hosea",
+    "aliases": [
+     "Hos",
+     "Ho"
+    ]
+   },
+   "te": {
+    "name": "హోషేయ",
+    "aliases": [
+     "హోషే",
+     "హొషేయ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "JOL",
+  "order": 29,
+  "osis": "Joel",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Joel",
+    "aliases": [
+     "Joel",
+     "Jl"
+    ]
+   },
+   "te": {
+    "name": "యోవేలు",
+    "aliases": [
+     "యోవే"
+    ]
+   }
+  }
+ },
+ {
+  "id": "AMO",
+  "order": 30,
+  "osis": "Amos",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Amos",
+    "aliases": [
+     "Amos",
+     "Am"
+    ]
+   },
+   "te": {
+    "name": "ఆమోసు",
+    "aliases": [
+     "ఆమో"
+    ]
+   }
+  }
+ },
+ {
+  "id": "OBA",
+  "order": 31,
+  "osis": "Obad",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Obadiah",
+    "aliases": [
+     "Obad",
+     "Ob"
+    ]
+   },
+   "te": {
+    "name": "ఓబద్యా",
+    "aliases": []
+   }
+  }
+ },
+ {
+  "id": "JON",
+  "order": 32,
+  "osis": "Jonah",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Jonah",
+    "aliases": [
+     "Jonah",
+     "Jnh",
+     "Jon"
+    ]
+   },
+   "te": {
+    "name": "యోనా",
+    "aliases": []
+   }
+  }
+ },
+ {
+  "id": "MIC",
+  "order": 33,
+  "osis": "Mic",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Micah",
+    "aliases": [
+     "Mic",
+     "Mc"
+    ]
+   },
+   "te": {
+    "name": "మీకా",
+    "aliases": [
+     "మీకా "
+    ]
+   }
+  }
+ },
+ {
+  "id": "NAM",
+  "order": 34,
+  "osis": "Nah",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Nahum",
+    "aliases": [
+     "Nah",
+     "Na"
+    ]
+   },
+   "te": {
+    "name": "నహూము",
+    "aliases": [
+     "నహూ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "HAB",
+  "order": 35,
+  "osis": "Hab",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Habakkuk",
+    "aliases": [
+     "Hab",
+     "Hb"
+    ]
+   },
+   "te": {
+    "name": "హబక్కూకు",
+    "aliases": [
+     "హబ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "ZEP",
+  "order": 36,
+  "osis": "Zeph",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Zephaniah",
+    "aliases": [
+     "Zeph",
+     "Zep",
+     "Zp"
+    ]
+   },
+   "te": {
+    "name": "జెఫన్యా",
+    "aliases": [
+     "జెఫ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "HAG",
+  "order": 37,
+  "osis": "Hag",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Haggai",
+    "aliases": [
+     "Hag",
+     "Hg"
+    ]
+   },
+   "te": {
+    "name": "హగ్గయి",
+    "aliases": [
+     "హగ్గ"
+    ]
+   }
+  }
+ },
+ {
+  "id": "ZEC",
+  "order": 38,
+  "osis": "Zech",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Zechariah",
+    "aliases": [
+     "Zech",
+     "Zec",
+     "Zc"
+    ]
+   },
+   "te": {
+    "name": "జెకర్యా",
+    "aliases": [
+     "జెక"
+    ]
+   }
+  }
+ },
+ {
+  "id": "MAL",
+  "order": 39,
+  "osis": "Mal",
+  "testament": "OT",
+  "names": {
+   "en": {
+    "name": "Malachi",
+    "aliases": [
+     "Mal",
+     "Ml"
+    ]
+   },
+   "te": {
+    "name": "మలాకీ",
+    "aliases": [
+     "మలా"
+    ]
+   }
+  }
+ },
+ {
+  "id": "MAT",
+  "order": 40,
+  "osis": "Matt",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Matthew",
+    "aliases": [
+     "Matt",
+     "Mat",
+     "Mt"
+    ]
+   },
+   "te": {
+    "name": "మత్తయి",
+    "aliases": [
+     "మత్తయి రాసిన సువార్త",
+     "మత్తయి సువార్త"
+    ]
+   }
+  }
+ },
+ {
+  "id": "MRK",
+  "order": 41,
+  "osis": "Mark",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Mark",
+    "aliases": [
+     "Mark",
+     "Mrk",
+     "Mar",
+     "Mk",
+     "Mr"
+    ]
+   },
+   "te": {
+    "name": "మార్కు",
+    "aliases": [
+     "మార్కు రాసిన సువార్త",
+     "మార్కు సువార్త"
+    ]
+   }
+  }
+ },
+ {
+  "id": "LUK",
+  "order": 42,
+  "osis": "Luke",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Luke",
+    "aliases": [
+     "Luke",
+     "Luk",
+     "Lk"
+    ]
+   },
+   "te": {
+    "name": "లూకా",
+    "aliases": [
+     "లూకా రాసిన సువార్త",
+     "లూకా సువార్త"
+    ]
+   }
+  }
+ },
+ {
+  "id": "JHN",
+  "order": 43,
+  "osis": "John",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "John",
+    "aliases": [
+     "John",
+     "Joh",
+     "Jhn",
+     "Jn"
+    ]
+   },
+   "te": {
+    "name": "యోహాను",
+    "aliases": [
+     "యోహాను రాసిన సువార్త",
+     "యోహా",
+     "యోహాను సువార్త"
+    ]
+   }
+  }
+ },
+ {
+  "id": "ACT",
+  "order": 44,
+  "osis": "Acts",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Acts",
+    "aliases": [
+     "Acts",
+     "Act",
+     "Ac"
+    ]
+   },
+   "te": {
+    "name": "అపొస్తలుల కార్యములు",
+    "aliases": [
+     "అపొ.కా.",
+     "అపోస్తలుల కార్యములు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "ROM",
+  "order": 45,
+  "osis": "Rom",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Romans",
+    "aliases": [
+     "Rom",
+     "Ro",
+     "Rm"
+    ]
+   },
+   "te": {
+    "name": "రోమా",
+    "aliases": [
+     "రోమీయులకు రాసిన పత్రిక",
+     "రోమీయులకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "1CO",
+  "order": 46,
+  "osis": "1Cor",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "1 Corinthians",
+    "aliases": [
+     "1 Cor",
+     "1 Co"
+    ]
+   },
+   "te": {
+    "name": "1 కొరింతీ",
+    "aliases": [
+     "1 కొరింతీ పత్రిక",
+     "కొరింతీయులకు రాసిన మొదటి పత్రిక",
+     "1కొరింతీ",
+     "1 కొరింథీయులకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "2CO",
+  "order": 47,
+  "osis": "2Cor",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "2 Corinthians",
+    "aliases": [
+     "2 Cor",
+     "2 Co"
+    ]
+   },
+   "te": {
+    "name": "2 కొరింతీ",
+    "aliases": [
+     "2 కొరింతీ పత్రిక",
+     "కొరింతీయులకు రాసిన రెండవ పత్రిక",
+     "2కొరింతీ",
+     "2 కొరింథీయులకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "GAL",
+  "order": 48,
+  "osis": "Gal",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Galatians",
+    "aliases": [
+     "Gal",
+     "Ga"
+    ]
+   },
+   "te": {
+    "name": "గలతీ",
+    "aliases": [
+     "గలతీ పత్రిక",
+     "గలతీయులకు రాసిన పత్రిక",
+     "గలతీయులకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "EPH",
+  "order": 49,
+  "osis": "Eph",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Ephesians",
+    "aliases": [
+     "Eph",
+     "Ephes"
+    ]
+   },
+   "te": {
+    "name": "ఎఫెసీ",
+    "aliases": [
+     "ఎఫెసీ పత్రిక",
+     "ఎఫెసీయులకు రాసిన పత్రిక",
+     "ఎఫెసీయులకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "PHP",
+  "order": 50,
+  "osis": "Phil",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Philippians",
+    "aliases": [
+     "Phil",
+     "Php",
+     "Pp"
+    ]
+   },
+   "te": {
+    "name": "ఫిలిప్పీ",
+    "aliases": [
+     "ఫిలిప్పీ పత్రిక",
+     "ఫిలిప్పీయులకు రాసిన పత్రిక",
+     "ఫిలిప్పీయులకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "COL",
+  "order": 51,
+  "osis": "Col",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Colossians",
+    "aliases": [
+     "Col",
+     "Co"
+    ]
+   },
+   "te": {
+    "name": "కొలస్స",
+    "aliases": [
+     "కొలస్స పత్రిక",
+     "కొలస్సయులకు రాసిన పత్రిక",
+     "కొలొస్సయులకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "1TH",
+  "order": 52,
+  "osis": "1Thess",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "1 Thessalonians",
+    "aliases": [
+     "1 Thess",
+     "1 Thes",
+     "1 Th"
+    ]
+   },
+   "te": {
+    "name": "1 తెస్సలోనిక",
+    "aliases": [
+     "1 తెస్సలోనిక పత్రిక",
+     "తెస్సలోనికయులకు రాసిన మొదటి పత్రిక",
+     "1తెస్స",
+     "తెస్సలోనీకయులకు రాసిన మొదటి పత్రిక",
+     "1 థెస్సలొనీకయులకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "2TH",
+  "order": 53,
+  "osis": "2Thess",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "2 Thessalonians",
+    "aliases": [
+     "2 Thess",
+     "2 Thes",
+     "2 Th"
+    ]
+   },
+   "te": {
+    "name": "2 తెస్సలోనిక",
+    "aliases": [
+     "2 తెస్సలోనిక పత్రిక",
+     "తెస్సలోనికయులకు రాసిన రెండవ పత్రిక",
+     "2తెస్స",
+     "తెస్సలోనీకయులకు రాసిన రెండవ పత్రిక",
+     "2 థెస్సలొనీకయులకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "1TI",
+  "order": 54,
+  "osis": "1Tim",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "1 Timothy",
+    "aliases": [
+     "1 Tim",
+     "1 Ti"
+    ]
+   },
+   "te": {
+    "name": "1 తిమోతి",
+    "aliases": [
+     "1 తిమోతి పత్రిక",
+     "తిమోతికి రాసిన మొదటి పత్రిక",
+     "1తిమో",
+     "1 తిమోతికి"
+    ]
+   }
+  }
+ },
+ {
+  "id": "2TI",
+  "order": 55,
+  "osis": "2Tim",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "2 Timothy",
+    "aliases": [
+     "2 Tim",
+     "2 Ti"
+    ]
+   },
+   "te": {
+    "name": "2 తిమోతి",
+    "aliases": [
+     "2 తిమోతి పత్రిక",
+     "తిమోతికి రాసిన రెండవ పత్రిక",
+     "2తిమో",
+     "2 తిమోతికి"
+    ]
+   }
+  }
+ },
+ {
+  "id": "TIT",
+  "order": 56,
+  "osis": "Titus",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Titus",
+    "aliases": [
+     "Titus",
+     "Tit"
+    ]
+   },
+   "te": {
+    "name": "తీతు",
+    "aliases": [
+     "తీతు పత్రిక",
+     "తీతుకు రాసిన పత్రిక",
+     "తీతుకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "PHM",
+  "order": 57,
+  "osis": "Phlm",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Philemon",
+    "aliases": [
+     "Philem",
+     "Phlm",
+     "Phm"
+    ]
+   },
+   "te": {
+    "name": "ఫిలేమోను",
+    "aliases": [
+     "ఫిలేమోను పత్రిక",
+     "ఫిలేమోనుకు రాసిన పత్రిక",
+     "ఫిలే",
+     "ఫిలేమోనుకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "HEB",
+  "order": 58,
+  "osis": "Heb",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Hebrews",
+    "aliases": [
+     "Heb"
+    ]
+   },
+   "te": {
+    "name": "హెబ్రీ",
+    "aliases": [
+     "హెబ్రీ పత్రిక",
+     "హెబ్రీయులకు రాసిన పత్రిక",
+     "హెబ్రీయులకు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "JAS",
+  "order": 59,
+  "osis": "Jas",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "James",
+    "aliases": [
+     "Jas",
+     "Jam",
+     "Jm"
+    ]
+   },
+   "te": {
+    "name": "యాకోబు",
+    "aliases": [
+     "యాకోబు పత్రిక",
+     "యాకోబు రాసిన పత్రిక",
+     "యాకో"
+    ]
+   }
+  }
+ },
+ {
+  "id": "1PE",
+  "order": 60,
+  "osis": "1Pet",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "1 Peter",
+    "aliases": [
+     "1 Pet",
+     "1 Pe",
+     "1 Pt"
+    ]
+   },
+   "te": {
+    "name": "1 పేతురు",
+    "aliases": [
+     "1 పేతురు పత్రిక",
+     "పేతురు రాసిన మొదటి పత్రిక",
+     "1పేతు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "2PE",
+  "order": 61,
+  "osis": "2Pet",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "2 Peter",
+    "aliases": [
+     "2 Pet",
+     "2 Pe",
+     "2 Pt"
+    ]
+   },
+   "te": {
+    "name": "2 పేతురు",
+    "aliases": [
+     "2 పేతురు పత్రిక",
+     "పేతురు రాసిన రెండవ పత్రిక",
+     "2పేతు"
+    ]
+   }
+  }
+ },
+ {
+  "id": "1JN",
+  "order": 62,
+  "osis": "1John",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "1 John",
+    "aliases": [
+     "1 John",
+     "1 Jn",
+     "1 Jhn",
+     "1 Jo"
+    ]
+   },
+   "te": {
+    "name": "1 యోహాను",
+    "aliases": [
+     "1 యోహాను పత్రిక",
+     "యోహాను రాసిన మొదటి పత్రిక",
+     "1యోహా"
+    ]
+   }
+  }
+ },
+ {
+  "id": "2JN",
+  "order": 63,
+  "osis": "2John",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "2 John",
+    "aliases": [
+     "2 John",
+     "2 Jn",
+     "2 Jhn",
+     "2 Jo"
+    ]
+   },
+   "te": {
+    "name": "2 యోహాను",
+    "aliases": [
+     "2 యోహాను పత్రిక",
+     "యోహాను రాసిన రెండవ పత్రిక",
+     "2యోహా"
+    ]
+   }
+  }
+ },
+ {
+  "id": "3JN",
+  "order": 64,
+  "osis": "3John",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "3 John",
+    "aliases": [
+     "3 John",
+     "3 Jn",
+     "3 Jhn",
+     "3 Jo"
+    ]
+   },
+   "te": {
+    "name": "3 యోహాను",
+    "aliases": [
+     "3 యోహాను పత్రిక",
+     "యోహాను రాసిన మూడవ పత్రిక",
+     "3యోహా"
+    ]
+   }
+  }
+ },
+ {
+  "id": "JUD",
+  "order": 65,
+  "osis": "Jude",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Jude",
+    "aliases": [
+     "Jude",
+     "Jud",
+     "Jd"
+    ]
+   },
+   "te": {
+    "name": "యూదా",
+    "aliases": [
+     "యూదా పత్రిక",
+     "యూదా రాసిన పత్రిక"
+    ]
+   }
+  }
+ },
+ {
+  "id": "REV",
+  "order": 66,
+  "osis": "Rev",
+  "testament": "NT",
+  "names": {
+   "en": {
+    "name": "Revelation",
+    "aliases": [
+     "Rev",
+     "Re",
+     "Rv",
+     "Revelations",
+     "Apocalypse"
+    ]
+   },
+   "te": {
+    "name": "ప్రకటన",
+    "aliases": [
+     "ప్రకటన గ్రంథము",
+     "యోహాను రాసిన ప్రకటన గ్రంథం",
+     "ప్రక"
+    ]
+   }
+  }
+ }
+]
