@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
-  ArrowLeft, BookOpen, Camera, ChevronLeft, ChevronRight, Circle, Eraser, Keyboard, ListFilter, Maximize2, Minus, MonitorUp, Pause,
+  ArrowLeft, BookOpen, Camera, ChevronLeft, ChevronRight, Circle, Eraser, Keyboard, ListFilter, Sparkles, Maximize2, Minus, MonitorUp, Pause,
   Play, Plus, RotateCcw, Square, Type, Video,
 } from "lucide-react";
-import { db, DEFAULT_CHURCH_ID, DEFAULT_SETTINGS, type ChurchSettings } from "@/lib/db";
+import { db, type ChurchSettings } from "@/lib/db";
+import { useChurch } from "@/lib/church/useChurch";
 import { useT } from "@/lib/i18n";
 import { formatReference, parseReference } from "@/lib/bible/reference";
 import { TRANSLATION_BY_ID, translationLang } from "@/lib/bible/translations";
@@ -23,11 +24,11 @@ import { EMPTY_SELECTION, selectionToRef, VerseSelector, type VerseSelection } f
 
 export default function PresentConsole({ id }: { id: string }) {
   const sermon = useLiveQuery(() => db.sermons.get(id), [id]);
-  const settings = useLiveQuery(() => db.churches.get(DEFAULT_CHURCH_ID), []);
+  const settings = useChurch();
   const media = useLiveQuery(() => db.media.toArray(), []);
   if (sermon === undefined || media === undefined) return <div className="min-h-screen bg-slate-950" />;
-  if (!sermon) return <div className="p-8">Sermon not found. <Link className="text-indigo-600" href="/">Back</Link></div>;
-  return <Console sermon={sermon} settings={settings ?? DEFAULT_SETTINGS} media={media} />;
+  if (!sermon) return <div className="p-8">Sermon not found. <Link className="text-gold-600" href="/">Back</Link></div>;
+  return <Console sermon={sermon} settings={settings} media={media} />;
 }
 
 function Console({ sermon, settings, media }: { sermon: Sermon; settings: ChurchSettings; media: MediaItem[] }) {
@@ -64,7 +65,7 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
 
   const plannedMin = sermon.points.reduce((n, p) => n + (p.minutes ?? 0), 0);
   const over = plannedMin > 0 && c.elapsedSec > plannedMin * 60;
-  const sceneBtn = (active: boolean) => `btn border ${active ? "border-amber-400 bg-amber-400 text-slate-950" : "border-slate-700 bg-slate-800 text-slate-100 hover:bg-slate-700"}`;
+  const sceneBtn = (active: boolean) => `btn border ${active ? "border-gold-400 bg-gold-400 text-stone-950" : "border-slate-700 bg-slate-800 text-slate-100 hover:bg-slate-700"}`;
   const k = state.scene.kind;
 
   const endSermon = async () => {
@@ -82,7 +83,10 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
           <div className="truncate font-semibold">{sermon.title || "Untitled"}</div>
           <div className="text-xs text-slate-400">{sermon.date} · {sermon.serviceName}</div>
         </div>
-        <div className={`rounded-lg px-3 py-1 font-mono text-lg tabular-nums ${over ? "bg-red-900/60 text-red-200" : "bg-slate-800"}`} title={t("elapsed")}>
+        {c.phase === "pre" && (
+          <button className="btn-primary px-4 text-base" onClick={actions.begin} data-testid="begin-sermon"><Play className="h-4 w-4" />{t("beginSermon")}</button>
+        )}
+        <div className={`rounded-lg px-3 py-1 font-mono text-lg tabular-nums ${over ? "bg-red-900/60 text-red-200" : c.phase === "pre" ? "bg-slate-800 text-slate-500" : "bg-slate-800"}`} title={c.phase === "pre" ? t("notStarted") : t("elapsed")}>
           {formatTime(c.elapsedSec)}{plannedMin > 0 && <span className="text-sm text-slate-400"> / {plannedMin}:00</span>}
         </div>
         <ScreenButton c={c} />
@@ -92,6 +96,7 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
 
       {/* Scene controls */}
       <div className="flex flex-wrap items-center gap-2 border-b border-slate-800 px-3 py-2">
+        <button className={sceneBtn(k === "welcome")} onClick={actions.welcome} data-testid="btn-welcome"><Sparkles className="h-4 w-4" />{t("welcomeScreen")}</button>
         <button className={sceneBtn(k === "blank")} onClick={actions.blank} data-testid="btn-blank"><Circle className="h-4 w-4 fill-current" />{t("blank")}</button>
         <button className={sceneBtn(k === "logo")} onClick={actions.logo}>✝ {t("logo")}</button>
         <button className={sceneBtn(k === "title")} onClick={actions.title}><Type className="h-4 w-4" />{t("showTitle")}</button>
@@ -158,7 +163,7 @@ function LanguageToggle({ sermon, value, onChange }: { sermon: Sermon; value: La
   return (
     <div className="flex overflow-hidden rounded-lg border border-slate-700" role="group" aria-label="Language">
       {opts.map(([m, label]) => (
-        <button key={m} onClick={() => onChange(m)} className={`px-3 py-2 text-sm ${value === m ? "bg-indigo-600 text-white" : "text-slate-300 hover:bg-slate-800"}`}>{label}</button>
+        <button key={m} onClick={() => onChange(m)} className={`px-3 py-2 text-sm ${value === m ? "bg-gold-400 text-stone-950" : "text-slate-300 hover:bg-slate-800"}`}>{label}</button>
       ))}
     </div>
   );
@@ -197,10 +202,10 @@ function PointersPanel({ sermon, c }: { sermon: Sermon; c: Controller }) {
           const current = idx === i;
           const verses = sermon.verses.filter((v) => v.pointId === p.id);
           return (
-            <li key={p.id} className={`rounded-lg border transition ${current ? "border-indigo-500 bg-indigo-950/60" : "border-slate-800 hover:border-slate-700"}`}>
+            <li key={p.id} className={`rounded-lg border transition ${current ? "border-gold-500 bg-gold-950/60" : "border-slate-800 hover:border-slate-700"}`}>
               <button onClick={() => c.setPointIndex(idx)} className="w-full p-3 text-left" data-testid="console-point">
                 <div className="flex items-center gap-2">
-                  <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${current ? "bg-indigo-500 text-white" : "bg-slate-700 text-slate-300"}`}>{idx + 1}</span>
+                  <span className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${current ? "bg-gold-400 text-stone-950" : "bg-slate-700 text-slate-300"}`}>{idx + 1}</span>
                   <span className={`flex-1 font-semibold ${current ? "text-lg" : "text-slate-300"}`}>{p.title || "…"}</span>
                   {verses.length > 0 && (
                     <span className="flex items-center gap-1 rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-300" title={t("verses")} data-testid="point-verse-count">
@@ -217,7 +222,7 @@ function PointersPanel({ sermon, c }: { sermon: Sermon; c: Controller }) {
                     <button
                       key={v.id}
                       onClick={() => c.actions.showVerseCue(v)}
-                      className={`rounded px-1.5 py-0.5 text-xs ${live?.cueId === v.id ? "bg-amber-400 font-semibold text-slate-950" : "bg-slate-800 text-slate-300 hover:bg-slate-700"}`}
+                      className={`rounded px-1.5 py-0.5 text-xs ${live?.cueId === v.id ? "bg-red-600 font-semibold text-white" : "bg-slate-800 text-slate-300 hover:bg-slate-700"}`}
                       data-testid="point-verse-chip"
                     >
                       {formatReference(v.ref, pLang)}
@@ -267,21 +272,21 @@ function VersesPanel({ sermon, c }: { sermon: Sermon; c: Controller }) {
   const row = (v: Sermon["verses"][number], idx: number, inCurrent: boolean) => {
     const isLive = live?.cueId === v.id;
     return (
-      <div key={v.id} className={`rounded-lg border ${isLive ? "border-amber-400 bg-amber-400/10" : "border-slate-700 bg-slate-800/50"}`}>
+      <div key={v.id} className={`rounded-lg border ${isLive ? "border-red-500 bg-red-500/10" : "border-slate-700 bg-slate-800/50"}`}>
         <button onClick={() => c.actions.showVerseCue(v)} className="flex w-full items-center gap-2 px-3 py-2.5 text-left hover:bg-slate-800/80" data-testid="console-verse">
           {inCurrent && idx < 9 && <kbd className="rounded bg-slate-700 px-1.5 text-xs text-slate-300">{idx + 1}</kbd>}
           <span className="flex-1">
             <span className="font-semibold">{formatReference(v.ref, pLang)}</span>
             <span className="ml-2 text-xs text-slate-400">{formatReference(v.ref, "en")}</span>
           </span>
-          {isLive && <span className="rounded bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-slate-950">{t("live")}</span>}
+          {isLive && <span className="rounded bg-red-600 px-1.5 py-0.5 text-[10px] font-bold text-white">{t("live")}</span>}
         </button>
         {isLive && live.slideCount > 1 && (
-          <div className="flex items-center gap-2 border-t border-amber-400/30 px-3 py-1.5">
+          <div className="flex items-center gap-2 border-t border-red-500/30 px-3 py-1.5">
             <button className="rounded p-1 hover:bg-slate-700" onClick={() => c.actions.gotoSlide(-1)} aria-label="Previous slide"><ChevronLeft className="h-4 w-4" /></button>
             <div className="flex flex-1 flex-wrap gap-1">
               {c.active?.slides.map((s, si) => (
-                <button key={si} onClick={() => c.actions.showVerse(v.id, v.ref, si)} className={`rounded px-1.5 py-0.5 text-xs ${si === live.slideIndex ? "bg-amber-400 text-slate-950" : "bg-slate-700 text-slate-300"}`}>{s.span}</button>
+                <button key={si} onClick={() => c.actions.showVerse(v.id, v.ref, si)} className={`rounded px-1.5 py-0.5 text-xs ${si === live.slideIndex ? "bg-red-600 text-white" : "bg-slate-700 text-slate-300"}`}>{s.span}</button>
               ))}
             </div>
             <button className="rounded p-1 hover:bg-slate-700" onClick={() => c.actions.gotoSlide(1)} aria-label="Next slide"><ChevronRight className="h-4 w-4" /></button>
@@ -296,16 +301,16 @@ function VersesPanel({ sermon, c }: { sermon: Sermon; c: Controller }) {
       title={t("verses")}
       icon={<BookOpen className="h-4 w-4" />}
       right={
-        <button onClick={() => setPicking(!picking)} className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium ${picking ? "bg-indigo-600 text-white" : "bg-slate-800 text-slate-200 hover:bg-slate-700"}`} data-testid="pick-verse">
+        <button onClick={() => setPicking(!picking)} className={`flex items-center gap-1 rounded-md px-2 py-1 text-xs font-medium ${picking ? "bg-gold-400 text-stone-950" : "bg-slate-800 text-slate-200 hover:bg-slate-700"}`} data-testid="pick-verse">
           <ListFilter className="h-3.5 w-3.5" />{t("pickVerse")}
         </button>
       }
     >
       {picking && (
-        <div className="mb-3 space-y-2 rounded-lg border border-indigo-500/50 bg-slate-950/60 p-3">
+        <div className="mb-3 space-y-2 rounded-lg border border-gold-500/50 bg-slate-950/60 p-3">
           <VerseSelector value={pick} onChange={setPick} tone="dark" />
           <div className="flex items-center gap-2">
-            <button className="btn bg-indigo-600 text-white hover:bg-indigo-500" disabled={!pickRef} onClick={showPick} data-testid="pick-show">
+            <button className="btn bg-gold-400 text-stone-950 font-semibold hover:bg-gold-300" disabled={!pickRef} onClick={showPick} data-testid="pick-show">
               <MonitorUp className="h-4 w-4" />{t("showOnScreen")}
             </button>
             {pickRef && <span className="text-sm text-slate-300">{formatReference(pickRef, pLang)} · {formatReference(pickRef, "en")}</span>}
@@ -314,24 +319,24 @@ function VersesPanel({ sermon, c }: { sermon: Sermon; c: Controller }) {
       )}
       <div className="mb-3 flex gap-2">
         <input
-          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-indigo-500"
+          className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm outline-none focus:border-gold-500"
           placeholder={`${t("quickVerse")}: యోహాను 3:16 / John 3:16`}
           value={quick}
           onChange={(e) => setQuick(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") showQuick(); if (e.key === "Escape") (e.target as HTMLInputElement).blur(); }}
           aria-label={t("quickVerse")}
         />
-        <button className="btn bg-indigo-600 text-white hover:bg-indigo-500" disabled={!quickRef} onClick={showQuick}>{t("show")}</button>
+        <button className="btn bg-gold-400 text-stone-950 font-semibold hover:bg-gold-300" disabled={!quickRef} onClick={showQuick}>{t("show")}</button>
       </div>
       {quick && quickRef && <div className="-mt-2 mb-3 text-xs text-slate-400">→ {formatReference(quickRef, pLang)} · {formatReference(quickRef, "en")}</div>}
-      {live?.cueId.startsWith("adhoc:") && <div className="mb-3 rounded-lg border border-amber-400 bg-amber-400/10 px-3 py-2 text-sm">{t("live")}: {live.refPrimary}</div>}
+      {live?.cueId.startsWith("adhoc:") && <div className="mb-3 rounded-lg border border-red-500 bg-red-500/10 px-3 py-2 text-sm">{t("live")}: {live.refPrimary}</div>}
       {!sermon.verses.length && <p className="text-sm text-slate-500">{t("noVerses")}</p>}
       <div className="space-y-4">
         {groups.map((g) => {
           const current = g.id === currentPointId;
           return (
-            <div key={g.id} ref={(el) => { groupRefs.current[g.id] = el; }} className={current ? "-mx-1 rounded-lg bg-indigo-950/40 p-1 ring-1 ring-indigo-500/40" : ""}>
-              <div className={`mb-1.5 text-xs font-semibold ${current ? "text-indigo-300" : "text-slate-500"}`}>{g.label}</div>
+            <div key={g.id} ref={(el) => { groupRefs.current[g.id] = el; }} className={current ? "-mx-1 rounded-lg bg-gold-950/40 p-1 ring-1 ring-gold-500/40" : ""}>
+              <div className={`mb-1.5 text-xs font-semibold ${current ? "text-gold-300" : "text-slate-500"}`}>{g.label}</div>
               <div className="space-y-1.5">{g.verses.map((v, idx) => row(v, idx, current))}</div>
             </div>
           );
@@ -370,7 +375,7 @@ function LiveMonitor({ c }: { c: Controller }) {
                 <div className="relative text-[7cqh] font-semibold">{m?.paused ? "⏸" : "▶"} {scene.title}</div>
                 {m && m.duration > 0 && (
                   <div className="relative h-[2cqh] w-3/4 rounded-full bg-white/20">
-                    <div className="h-full rounded-full bg-amber-400" style={{ width: `${Math.min(100, (m.currentTime / m.duration) * 100)}%` }} />
+                    <div className="h-full rounded-full bg-gold-400" style={{ width: `${Math.min(100, (m.currentTime / m.duration) * 100)}%` }} />
                   </div>
                 )}
                 {m && <div className="relative text-[5cqh] tabular-nums text-white/70">{formatTime(m.currentTime)} / {formatTime(m.duration)}</div>}
@@ -396,14 +401,14 @@ function MediaPanel({ sermon, c }: { sermon: Sermon; c: Controller }) {
           const isLive = live?.cueId === cue.id;
           const status = isLive && c.mediaStatus?.nonce === live.nonce ? c.mediaStatus : null;
           return (
-            <div key={cue.id} className={`rounded-lg border ${isLive ? "border-amber-400 bg-amber-400/10" : "border-slate-700 bg-slate-800/50"}`}>
+            <div key={cue.id} className={`rounded-lg border ${isLive ? "border-red-500 bg-red-500/10" : "border-slate-700 bg-slate-800/50"}`}>
               <button className="flex w-full items-center gap-2 px-3 py-2.5 text-left hover:bg-slate-800/80" onClick={() => c.actions.showMedia(cue.id, m)} data-testid="console-media">
                 <MediaIcon item={m} />
                 <span className="flex-1 truncate font-medium">{m.title}</span>
-                {isLive ? <span className="rounded bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-slate-950">{t("live")}</span> : <Play className="h-4 w-4 text-slate-400" />}
+                {isLive ? <span className="rounded bg-red-600 px-1.5 py-0.5 text-[10px] font-bold text-white">{t("live")}</span> : <Play className="h-4 w-4 text-slate-400" />}
               </button>
               {isLive && m.kind === "video" && (
-                <div className="flex items-center gap-1 border-t border-amber-400/30 px-2 py-1.5">
+                <div className="flex items-center gap-1 border-t border-red-500/30 px-2 py-1.5">
                   <button className="btn px-2 py-1 hover:bg-slate-700" onClick={() => c.actions.mediaCommand(status?.paused ? "play" : "pause")} aria-label={status?.paused ? t("play") : t("pause")}>
                     {status?.paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
                   </button>
@@ -451,7 +456,7 @@ function CameraPanel({ c }: { c: Controller }) {
         </select>
       )}
       {c.state.cameraOn && (
-        <button onClick={c.actions.camera} className={`relative block aspect-video w-full overflow-hidden rounded-lg ring-2 ${c.state.scene.kind === "camera" ? "ring-amber-400" : "ring-slate-700 hover:ring-slate-500"}`} style={{ containerType: "size" }}>
+        <button onClick={c.actions.camera} className={`relative block aspect-video w-full overflow-hidden rounded-lg ring-2 ${c.state.scene.kind === "camera" ? "ring-gold-400" : "ring-slate-700 hover:ring-slate-500"}`} style={{ containerType: "size" }}>
           <CameraView stream={stream} />
           <span className="absolute bottom-1 left-1 rounded bg-black/70 px-1.5 text-xs">{t("show")}</span>
         </button>

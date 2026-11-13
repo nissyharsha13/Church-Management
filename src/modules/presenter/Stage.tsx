@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import type { SlideVerse } from "@/lib/bible/slides";
 import type { DisplayState, Scene } from "./protocol";
+import { BrandBoard, LogoScene, ThemeBackground } from "./BrandBoard";
 
 /**
  * Renders what the congregation sees. Used by the display window AND the
@@ -24,17 +25,15 @@ export function Stage({ state, cameraStream, renderMedia }: StageProps) {
       {/* Background layer */}
       {showCameraBg ? <CameraView stream={cameraStream} /> : scene.kind !== "blank" && scene.kind !== "media" && <ThemeBackground />}
 
-      {scene.kind === "logo" && <LogoScene name={state.church.name} tagline={state.church.tagline} />}
+      {scene.kind === "logo" && <LogoScene church={state.church} />}
+      {scene.kind === "welcome" && <BrandBoard state={state} variant="welcome" />}
+      {scene.kind === "ended" && <BrandBoard state={state} variant="ended" />}
       {scene.kind === "title" && <TitleScene title={scene.title} subtitle={scene.subtitle} />}
       {scene.kind === "verse" && <VerseScene scene={scene} state={state} overlay={showCameraBg} />}
       {scene.kind === "media" && renderMedia(scene)}
-      {scene.kind === "camera" && !state.cameraOn && <LogoScene name={state.church.name} tagline={state.church.tagline} />}
+      {scene.kind === "camera" && !state.cameraOn && <LogoScene church={state.church} />}
     </div>
   );
-}
-
-function ThemeBackground() {
-  return <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,#1e3a8a_0%,#0b1229_55%,#05070f_100%)]" />;
 }
 
 export function CameraView({ stream }: { stream: MediaStream | null }) {
@@ -46,21 +45,13 @@ export function CameraView({ stream }: { stream: MediaStream | null }) {
   return <video ref={ref} autoPlay muted playsInline className="absolute inset-0 h-full w-full object-cover" />;
 }
 
-function LogoScene({ name, tagline }: { name: string; tagline: string }) {
-  return (
-    <div className="absolute inset-0 flex flex-col items-center justify-center gap-[2cqh] text-center">
-      <div className="text-[9cqh] leading-none opacity-90">✝</div>
-      <div className="px-[6cqw] text-[7cqh] font-bold tracking-wide">{name}</div>
-      {tagline && <div className="px-[6cqw] text-[3.5cqh] opacity-75">{tagline}</div>}
-    </div>
-  );
-}
-
 function TitleScene({ title, subtitle }: { title: string; subtitle: string }) {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center gap-[3cqh] px-[8cqw] text-center">
-      <div className="text-[8cqh] font-bold leading-tight" style={{ textWrap: "balance" }}>{title}</div>
-      {subtitle && <div className="text-[3.6cqh] opacity-80">{subtitle}</div>}
+      <div className="h-[0.4cqh] w-[12cqw] bg-[linear-gradient(90deg,transparent,#d4a52c,transparent)]" />
+      <div className="text-[8cqh] font-bold leading-tight text-gold-gloss animate-shine" style={{ textWrap: "balance" }}>{title}</div>
+      <div className="h-[0.4cqh] w-[12cqw] bg-[linear-gradient(90deg,transparent,#d4a52c,transparent)]" />
+      {subtitle && <div className="text-[3.6cqh] text-gold-100/90">{subtitle}</div>}
     </div>
   );
 }
@@ -88,7 +79,7 @@ function VerseScene({ scene, state, overlay }: { scene: Extract<Scene, { kind: "
       {showP && <VerseBlock verses={scene.verses} pick="primary" size={pSize} multi={multi} lang="te" />}
       {showP && showS && <div className="my-[1.6cqh] h-px w-full bg-white/25" />}
       {showS && <VerseBlock verses={scene.verses} pick="secondary" size={sSize} multi={multi} lang="en" dim={showP} />}
-      <div className="mt-[2cqh] flex items-center justify-between text-[2.8cqh] font-semibold text-amber-200" style={{ fontSize: `${2.8 * Math.max(0.75, scale)}cqh` }}>
+      <div className="mt-[2cqh] flex items-center justify-between text-[2.8cqh] font-semibold text-gold-300" style={{ fontSize: `${2.8 * Math.max(0.75, scale)}cqh` }}>
         <span>{ref}</span>
         {scene.slideCount > 1 && <span className="text-white/50">{scene.slideIndex + 1}/{scene.slideCount}</span>}
       </div>
@@ -110,7 +101,7 @@ function VerseBlock({ verses, pick, size, multi, lang, dim }: { verses: SlideVer
     <p lang={lang} className={`leading-[1.45] ${dim ? "text-white/85" : ""} ${lang === "te" ? "font-[family-name:var(--font-telugu)]" : ""}`} style={{ fontSize: `${size}cqh`, textWrap: "pretty" }}>
       {verses.map((v) => v[pick] && (
         <span key={v.n}>
-          {multi && <sup className="mr-[0.4em] text-[0.55em] font-bold text-amber-200/80">{v.label ?? v.n}</sup>}
+          {multi && <sup className="mr-[0.4em] text-[0.55em] font-bold text-gold-300/90">{v.label ?? v.n}</sup>}
           {v[pick]}{" "}
         </span>
       ))}

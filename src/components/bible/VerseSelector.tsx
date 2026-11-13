@@ -41,7 +41,7 @@ export function VerseSelector({ value, onChange, tone = "light" }: Props) {
   const t = useT();
   const dark = tone === "dark";
   const field = dark
-    ? "w-full rounded-lg border border-slate-700 bg-slate-950 px-2 py-2 text-sm text-slate-100"
+    ? "w-full rounded-lg border border-stone-700 bg-stone-950 px-2 py-2 text-sm text-stone-100"
     : "input";
   const chapters = value.book ? chapterCount(value.book) : 0;
   const verses = value.book && value.chapter ? verseCount(value.book, value.chapter) : 0;
@@ -80,7 +80,7 @@ export function VerseSelector({ value, onChange, tone = "light" }: Props) {
 
       {verses > 0 && (
         <div>
-          <div className={`mb-1.5 flex items-center justify-between text-xs ${dark ? "text-slate-400" : "text-slate-500"}`}>
+          <div className={`mb-1.5 flex items-center justify-between text-xs ${dark ? "text-stone-400" : "text-stone-500"}`}>
             <span>{t("verseRangeHint")}</span>
             {value.start !== null && (
               <button className="underline" onClick={() => onChange({ ...value, start: null, end: null })}>{t("clearSelection")}</button>
@@ -99,8 +99,8 @@ export function VerseSelector({ value, onChange, tone = "light" }: Props) {
                   data-testid="verse-tile"
                   className={`h-9 rounded-md text-sm font-medium tabular-nums transition ${
                     on
-                      ? edge ? "bg-indigo-600 text-white" : "bg-indigo-400 text-white"
-                      : dark ? "bg-slate-800 text-slate-200 hover:bg-slate-700" : "bg-white text-slate-700 ring-1 ring-slate-200 hover:bg-indigo-50"
+                      ? edge ? "bg-gold-600 text-white" : "bg-gold-400 text-white"
+                      : dark ? "bg-stone-800 text-stone-200 hover:bg-stone-700" : "bg-white text-stone-700 ring-1 ring-stone-200 hover:bg-gold-50"
                   }`}
                 >
                   {n}

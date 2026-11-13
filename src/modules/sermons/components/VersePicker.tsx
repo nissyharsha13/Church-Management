@@ -43,7 +43,7 @@ export function VersePicker({ primaryTranslation, secondaryTranslation, onAdd, i
     <div className="space-y-3">
       <div className="flex gap-1 text-xs" role="tablist">
         {(["select", "type"] as const).map((m) => (
-          <button key={m} role="tab" aria-selected={mode === m} onClick={() => setMode(m)} className={`flex items-center gap-1 rounded-md px-2.5 py-1 ${mode === m ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"}`}>
+          <button key={m} role="tab" aria-selected={mode === m} onClick={() => setMode(m)} className={`flex items-center gap-1 rounded-md px-2.5 py-1 ${mode === m ? "bg-stone-900 text-white" : "bg-stone-100 text-stone-600"}`}>
             {m === "select" ? <><ListFilter className="h-3.5 w-3.5" />{t("selectTab")}</> : <><Keyboard className="h-3.5 w-3.5" />{t("typeTab")}</>}
           </button>
         ))}
@@ -65,7 +65,7 @@ export function VersePicker({ primaryTranslation, secondaryTranslation, onAdd, i
           {suggestions.length > 0 && (
             <div className="mt-1 flex flex-wrap gap-1">
               {suggestions.map((id) => (
-                <button key={id} className="rounded-md bg-indigo-50 px-2 py-0.5 text-xs text-indigo-700" onClick={() => setText(`${bookName(id, lang)} `)}>
+                <button key={id} className="rounded-md bg-gold-50 px-2 py-0.5 text-xs text-gold-700" onClick={() => setText(`${bookName(id, lang)} `)}>
                   {bookName(id, "te")} · {bookName(id, "en")}
                 </button>
               ))}
@@ -77,8 +77,8 @@ export function VersePicker({ primaryTranslation, secondaryTranslation, onAdd, i
 
       {ref && (
         <>
-          <div className="text-sm font-semibold text-indigo-700" data-testid="selection-summary">
-            {formatReference(ref, "te")} <span className="font-normal text-slate-500">· {formatReference(ref, "en")}</span>
+          <div className="text-sm font-semibold text-gold-700" data-testid="selection-summary">
+            {formatReference(ref, "te")} <span className="font-normal text-stone-500">· {formatReference(ref, "en")}</span>
           </div>
           <PassagePreview refValue={ref} primary={primaryTranslation} secondary={secondaryTranslation} />
         </>
@@ -96,14 +96,14 @@ export function PassagePreview({ refValue, primary, secondary, compact }: { refV
   const s = usePassage(secondary || null, refValue);
   const box = compact ? "max-h-28" : "max-h-48";
   return (
-    <div className={`grid gap-3 rounded-lg bg-slate-50 p-3 text-sm ${secondary ? "md:grid-cols-2" : ""}`}>
+    <div className={`grid gap-3 rounded-lg bg-stone-50 p-3 text-sm ${secondary ? "md:grid-cols-2" : ""}`}>
       {[{ v: p, id: primary }, ...(secondary ? [{ v: s, id: secondary }] : [])].map(({ v, id }) => (
         <div key={id} className={`${box} overflow-y-auto`} lang={translationLang(id)}>
-          <div className="mb-1 text-xs font-semibold text-slate-500">{formatReference(refValue, translationLang(id))} · {id.split("-")[1].toUpperCase()}</div>
-          {v.loading && <div className="text-slate-400">…</div>}
+          <div className="mb-1 text-xs font-semibold text-stone-500">{formatReference(refValue, translationLang(id))} · {id.split("-")[1].toUpperCase()}</div>
+          {v.loading && <div className="text-stone-400">…</div>}
           {v.error && <div className="text-red-600">{v.error}</div>}
           {v.verses.map((x) => (
-            <p key={x.n} className="leading-relaxed"><sup className="mr-1 text-slate-400">{x.label ?? x.n}</sup>{x.text}</p>
+            <p key={x.n} className="leading-relaxed"><sup className="mr-1 text-stone-400">{x.label ?? x.n}</sup>{x.text}</p>
           ))}
         </div>
       ))}

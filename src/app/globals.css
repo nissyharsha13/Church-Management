@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
+/* White & gold theme (see docs/DECISIONS.md D-013) */
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #fbfaf7;
+  --foreground: #1c1917;
+  /* Metallic gold gradient used for the logo, wordmark and primary buttons */
+  --gold-gloss: linear-gradient(160deg, #7a5410 0%, #e9c95a 22%, #fff3bf 33%, #d4a52c 46%, #8a6212 60%, #f0d264 78%, #b8862b 100%);
+  /* Deeper gold for use on white backgrounds (highlights stay visible) */
+  --gold-gloss-deep: linear-gradient(160deg, #5c3f0c 0%, #a87a1c 25%, #d9ae45 40%, #8a6212 58%, #c9992e 78%, #6b4a0f 100%);
+  --gold-gloss-soft: linear-gradient(170deg, #f7e6a6 0%, #e2bd55 40%, #c9992e 70%, #e8c766 100%);
 }
 
 @theme inline {
@@ -10,6 +16,31 @@
   --color-foreground: var(--foreground);
   --font-sans: "Noto Sans Variable", "Noto Sans Telugu Variable", system-ui, sans-serif;
   --font-telugu: "Noto Sans Telugu Variable", "Noto Sans Variable", sans-serif;
+  --font-display: "Cinzel", "Noto Serif", Georgia, serif;
+}
+
+@theme {
+  --color-gold-50: #fbf7ec;
+  --color-gold-100: #f5ebcf;
+  --color-gold-200: #ebd69e;
+  --color-gold-300: #dfbd68;
+  --color-gold-400: #d1a440;
+  --color-gold-500: #b88a28;
+  --color-gold-600: #9a711d;
+  --color-gold-700: #7b5818;
+  --color-gold-800: #634718;
+  --color-gold-900: #523b17;
+  --color-gold-950: #2e200a;
+  --animate-shine: shine 6s ease-in-out infinite;
+  --animate-fade-in: fade-in 1.2s ease-out both;
+  @keyframes shine {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(0.6cqh); }
+    to { opacity: 1; transform: none; }
+  }
 }
 
 body {
@@ -20,14 +51,34 @@ body {
 
 /* Form controls */
 @utility input {
-  @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200;
+  @apply w-full rounded-lg border border-stone-300 bg-white px-3 py-2 text-sm text-stone-900 outline-none focus:border-gold-500 focus:ring-2 focus:ring-gold-200;
 }
 @utility btn {
   @apply inline-flex items-center justify-center gap-1.5 rounded-lg px-3 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50;
 }
-@utility btn-primary { @apply btn bg-indigo-600 text-white hover:bg-indigo-700; }
-@utility btn-secondary { @apply btn border border-slate-300 bg-white text-slate-700 hover:bg-slate-50; }
-@utility btn-ghost { @apply btn text-slate-600 hover:bg-slate-100; }
+@utility btn-primary {
+  @apply btn text-gold-950 shadow-sm ring-1 ring-gold-600/40 hover:brightness-105;
+  background: var(--gold-gloss-soft);
+}
+@utility btn-secondary { @apply btn border border-gold-300 bg-white text-gold-900 hover:bg-gold-50; }
+@utility btn-ghost { @apply btn text-stone-600 hover:bg-stone-100; }
 @utility btn-danger { @apply btn text-red-600 hover:bg-red-50; }
-@utility card { @apply rounded-xl border border-slate-200 bg-white shadow-sm; }
-@utility label { @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500; }
+@utility card { @apply rounded-xl border border-stone-200 bg-white shadow-sm; }
+@utility label { @apply mb-1 block text-xs font-semibold uppercase tracking-wide text-stone-500; }
+
+/* Glossy gold text (wordmarks, headings on the screen) */
+@utility text-gold-gloss {
+  background-image: var(--gold-gloss);
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+@utility text-gold-gloss-deep {
+  background-image: var(--gold-gloss-deep);
+  background-size: 220% 220%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

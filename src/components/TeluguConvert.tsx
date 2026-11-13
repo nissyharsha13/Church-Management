@@ -44,7 +44,7 @@ export function TeluguConvert({ value, onChange, label }: { value: string; onCha
   return (
     <span className="inline-flex items-center gap-1.5 text-xs">
       {undo !== null ? (
-        <button type="button" className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-slate-500 hover:bg-slate-100" onClick={() => { onChange(undo); setUndo(null); }}>
+        <button type="button" className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-stone-500 hover:bg-stone-100" onClick={() => { onChange(undo); setUndo(null); }}>
           <Undo2 className="h-3 w-3" />{t("undo")}
         </button>
       ) : null}
@@ -54,7 +54,7 @@ export function TeluguConvert({ value, onChange, label }: { value: string; onCha
         disabled={busy || !hasLatin}
         title={t("convertHint")}
         aria-label={`${t("convertToTelugu")}${label ? ` — ${label}` : ""}`}
-        className="inline-flex items-center gap-1 rounded-md bg-amber-50 px-1.5 py-0.5 font-medium text-amber-800 ring-1 ring-amber-200 hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-40"
+        className="inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-md bg-amber-50 px-1.5 py-0.5 font-medium text-amber-800 ring-1 ring-amber-200 hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-40"
       >
         {busy ? <Loader2 className="h-3 w-3 animate-spin" /> : <Languages className="h-3 w-3" />}
         {t("convertToTelugu")}

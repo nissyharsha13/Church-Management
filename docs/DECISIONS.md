@@ -48,3 +48,14 @@ Each entry says what we decided, why, and what would make us revisit it.
 
 ### D-012: Verse picking is select-first, type-second
 - **Why**: pastor feedback. A book dropdown grouped by testament, then chapter, then a grid of every verse (tap one verse, or tap the first and last for a range) is easier than typing. Typing stays as the second tab, and is also available in the console as "Quick verse". The same `VerseSelector` component powers the planner and the console's "Pick a verse".
+
+### D-013: White & gold theme; gold emblem traced from the YouTube banner
+- **App**: warm white background, gold accents and glossy-gold primary buttons. The deeper gold gradient is used on white so highlights stay visible. The presenter console stays dark on purpose to avoid glare in a dim hall, with gold accents and red for "Live".
+- **Screen**: black-and-gold backdrop, gold wordmark (Cinzel, bundled offline) and gold emblem.
+- **Logo**: the crown + "DC" emblem was traced to a vector (`public/branding/divine-church-emblem.svg`) from the banner's orange shield. "DIVINE CHURCH" is typeset rather than traced, because the banner lettering was too low-resolution. The emblem is drawn as a CSS mask over a metallic gradient, so any transparent logo uploaded in Settings gets the same gold finish. The gold finish can be switched off for logos that have their own background.
+
+### D-014: Sermon phases — welcome → live → thank-you
+- **Welcome**: opening the console shows the Welcome board on the screen: greeting by time of day (Lord's-day greeting on Sundays), live clock, Telugu + English date, "the message will begin shortly", a rotating welcome verse, church name, pastor, address, service time and YouTube (QR code once the link is set). The timer starts with **Begin sermon** or automatically on the first verse, video, title or camera.
+- **Thank-you**: **End sermon** switches the screen to the thank-you board (gratitude / live-by-the-Word verses), which stays up until the screen window is closed.
+- **Verses**: welcome and ended verses (20 each, in `src/modules/presenter/occasion.ts`) rotate every 40 s, with a different starting verse each day.
+- **Profile**: the church profile lives in Settings, seeded from the YouTube banner (`DEFAULT_SETTINGS` in `src/lib/db.ts`). Another church only changes these fields.

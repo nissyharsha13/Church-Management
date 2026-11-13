@@ -113,8 +113,19 @@ fs.mkdirSync(OUT, { recursive: true });
   await page.getByText("Screen connected").waitFor({ timeout: 8000 });
   ok(true, "console sees screen as connected");
 
-  // 5. Show first verse (Mark 4:35-38)
+  // 4b. Before the sermon: welcome board with greeting, clock, verse, "starting shortly"
+  await display.getByTestId("board-verse").waitFor({ timeout: 8000 });
+  const board = await display.locator("body").innerText();
+  ok(/త్వరలో ప్రారంభమవుతుంది/.test(board) && /will begin shortly/.test(board), "welcome board says the message starts shortly (TE + EN)");
+  ok(/DIVINE CHURCH|Divine Church/i.test(board) && /Prasanna Kumar/.test(board) && /Manikonda/.test(board), "welcome board shows church, pastor and address");
+  ok(/\d{1,2}:\d{2}\s?(am|pm)/i.test(await display.getByTestId("board-clock").innerText()), "welcome board shows the current time");
+  ok(await page.getByTestId("begin-sermon").isVisible(), "console offers 'Begin sermon' while the welcome board is up");
+  await display.screenshot({ path: `${OUT}/4a-display-welcome.png` });
+
+  // 5. Show first verse (Mark 4:35-38) — this also starts the sermon timer
   await page.getByTestId("console-verse").first().click();
+  await page.getByTestId("begin-sermon").waitFor({ state: "detached", timeout: 5000 });
+  ok(true, "showing the first verse starts the sermon (Begin button goes away)");
   await display.getByText("మార్కు").first().waitFor({ timeout: 8000 });
   const dText = await display.locator("body").innerText();
   ok(/Mark 4:35/.test(dText) && /మార్కు/.test(dText), "display shows Telugu + English verse with references");
@@ -223,6 +234,25 @@ fs.mkdirSync(OUT, { recursive: true });
   await page.getByTestId("console-media").filter({ hasText: "YouTube" }).click();
   await display.locator("iframe[src*='youtube']").waitFor({ timeout: 5000 });
   ok((await display.locator("iframe").getAttribute("src")).includes("start=10"), "YouTube embed starts at the trim point");
+
+  // 11b. End sermon -> thank-you board stays on the screen
+  page.once("dialog", (d) => d.accept());
+  await page.getByRole("button", { name: /End sermon/ }).click();
+  await page.waitForURL((u) => !u.pathname.startsWith("/present"));
+  await display.getByTestId("board-message").getByText(/ముగిసింది/).waitFor({ timeout: 5000 });
+  ok(/thank you for joining us/i.test(await display.getByTestId("board-message").innerText()), "after End sermon the screen shows the thank-you board");
+  await display.getByTestId("board-verse").waitFor({ timeout: 8000 });
+  await display.screenshot({ path: `${OUT}/4b-display-ended.png` });
+
+  // 11c. Settings: profile preview + logo upload
+  await page.goto(BASE + "/settings");
+  await page.getByTestId("settings-preview").getByText("Ps Prasanna Kumar").first().waitFor({ timeout: 8000 });
+  ok(true, "settings shows a live preview of the screen with the church profile");
+  await page.screenshot({ path: `${OUT}/10-settings.png` });
+  await page.getByTestId("logo-upload").setInputFiles(path.join(FIX, "cross.png"));
+  await page.getByRole("button", { name: "Use default logo" }).waitFor({ timeout: 5000 });
+  ok(true, "custom logo upload is saved");
+  await page.getByRole("button", { name: "Use default logo" }).click();
 
   // 12. Sign out
   await page.goto(BASE + "/");

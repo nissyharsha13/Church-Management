@@ -12,6 +12,10 @@ export type LanguageMode = "both" | "primary" | "secondary";
 export type Scene =
   | { kind: "blank" }
   | { kind: "logo" }
+  /** Before the sermon: greeting, clock, welcome verse, "starting shortly" */
+  | { kind: "welcome" }
+  /** After the sermon: thank-you, clock, a verse for the week */
+  | { kind: "ended" }
   | { kind: "title"; title: string; subtitle: string }
   | { kind: "camera" }
   | {
@@ -49,8 +53,24 @@ export interface DisplayState {
   /** Show verses as a lower-third over the camera instead of full screen */
   overlayOnCamera: boolean;
   fontScale: number;
-  church: { name: string; tagline: string };
+  church: ChurchInfo;
+  /** Bible translations used for welcome/ended verses */
+  translations: { primary: string; secondary: string };
 }
+
+/** Church details shown on the screen (logo itself is read from settings by the screen). */
+export interface ChurchInfo {
+  name: string;
+  nameTe: string;
+  tagline: string;
+  pastorName: string;
+  address: string;
+  serviceTimes: string;
+  youtubeName: string;
+  youtubeUrl: string;
+}
+
+export const EMPTY_CHURCH: ChurchInfo = { name: "", nameTe: "", tagline: "", pastorName: "", address: "", serviceTimes: "", youtubeName: "", youtubeUrl: "" };
 
 export interface MediaStatus {
   nonce: string;
@@ -78,7 +98,8 @@ export const INITIAL_STATE: DisplayState = {
   cameraDeviceId: null,
   overlayOnCamera: true,
   fontScale: 1,
-  church: { name: "", tagline: "" },
+  church: EMPTY_CHURCH,
+  translations: { primary: "te-irv", secondary: "en-kjv" },
 };
 
 /** What to show when the operator presses "Clear". */

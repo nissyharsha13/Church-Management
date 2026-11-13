@@ -59,7 +59,7 @@ export default function LibraryPage() {
       <div className="grid gap-4 md:grid-cols-2">
         <section className="card space-y-3 p-5">
           <h2 className="flex items-center gap-2 font-semibold"><Upload className="h-4 w-4" />{t("uploadFile")}</h2>
-          <p className="text-sm text-slate-500">Stored on this computer — plays without internet.</p>
+          <p className="text-sm text-stone-500">Stored on this computer — plays without internet.</p>
           <label className={`btn-primary cursor-pointer ${busy ? "opacity-50" : ""}`}>
             <Upload className="h-4 w-4" />{busy ? "…" : t("uploadFile")}
             <input type="file" accept="video/*,image/*" multiple className="hidden" onChange={(e) => upload(e.target.files)} disabled={busy} data-testid="upload" />
@@ -78,7 +78,7 @@ export default function LibraryPage() {
         </section>
       </div>
 
-      {items && items.length === 0 && <div className="card p-8 text-center text-slate-500">{t("emptyLibrary")}</div>}
+      {items && items.length === 0 && <div className="card p-8 text-center text-stone-500">{t("emptyLibrary")}</div>}
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {items?.map((m) => <MediaCard key={m.id} item={m} onDelete={() => remove(m)} />)}
       </div>
@@ -99,7 +99,7 @@ function MediaCard({ item: m, onDelete }: { item: MediaItem; onDelete: () => voi
   const trim = m.startSec !== undefined || m.endSec !== undefined ? `${formatTime(m.startSec ?? 0)} – ${formatTime(m.endSec) || "end"}` : "";
   return (
     <div className="card overflow-hidden">
-      <div className="flex aspect-video items-center justify-center bg-slate-900">
+      <div className="flex aspect-video items-center justify-center bg-stone-900">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         {thumb ? <img src={thumb} alt="" className="h-full w-full object-cover" /> : <MediaIcon item={m} className="h-10 w-10" />}
       </div>
@@ -107,7 +107,7 @@ function MediaCard({ item: m, onDelete }: { item: MediaItem; onDelete: () => voi
         <MediaIcon item={m} />
         <div className="min-w-0 flex-1">
           <div className="truncate text-sm font-medium">{m.title}</div>
-          <div className="flex items-center gap-1 text-xs text-slate-500">
+          <div className="flex items-center gap-1 text-xs text-stone-500">
             {m.source === "file" ? <><WifiOff className="h-3 w-3" />{t("offlineReady")}{m.size ? ` · ${(m.size / 1e6).toFixed(1)} MB` : ""}</> : <><Wifi className="h-3 w-3" />{t("needsInternet")}</>}
             {trim && ` · ${trim}`}
           </div>

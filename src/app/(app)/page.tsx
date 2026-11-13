@@ -37,8 +37,8 @@ export default function Dashboard() {
       </div>
 
       {sermons.length === 0 && (
-        <div className="card p-10 text-center text-slate-500">
-          <BookOpenCheck className="mx-auto mb-3 h-10 w-10 text-slate-300" />
+        <div className="card p-10 text-center text-stone-500">
+          <BookOpenCheck className="mx-auto mb-3 h-10 w-10 text-stone-300" />
           {t("noSermons")}
         </div>
       )}
@@ -58,25 +58,25 @@ export default function Dashboard() {
 function SermonCard({ sermon: s, isToday }: { sermon: Sermon; isToday: boolean }) {
   const t = useT();
   const router = useRouter();
-  const statusColor = { draft: "bg-amber-100 text-amber-800", ready: "bg-emerald-100 text-emerald-800", delivered: "bg-slate-100 text-slate-600" }[s.status];
+  const statusColor = { draft: "bg-amber-100 text-amber-800", ready: "bg-emerald-100 text-emerald-800", delivered: "bg-stone-100 text-stone-600" }[s.status];
   return (
-    <div className={`card flex flex-col p-4 ${isToday ? "ring-2 ring-indigo-300" : ""}`}>
+    <div className={`card flex flex-col p-4 ${isToday ? "ring-2 ring-gold-300" : ""}`}>
       <div className="flex items-start justify-between gap-2">
         <div className="min-w-0">
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-stone-500">
             {new Date(s.date + "T00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short", year: "numeric" })} · {s.serviceName}
           </div>
-          <Link href={`/sermons/${s.id}`} className="mt-0.5 block truncate text-lg font-semibold hover:text-indigo-700">
-            {s.title || <span className="italic text-slate-400">Untitled</span>}
+          <Link href={`/sermons/${s.id}`} className="mt-0.5 block truncate text-lg font-semibold hover:text-gold-700">
+            {s.title || <span className="italic text-stone-400">Untitled</span>}
           </Link>
-          {s.speaker && <div className="text-sm text-slate-500">{s.speaker}</div>}
+          {s.speaker && <div className="text-sm text-stone-500">{s.speaker}</div>}
         </div>
         <span className={`shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ${statusColor}`}>{t(`status_${s.status}`)}</span>
       </div>
-      <div className="mt-2 line-clamp-2 text-sm text-slate-600">
+      <div className="mt-2 line-clamp-2 text-sm text-stone-600">
         {s.verses.slice(0, 4).map((v) => formatReference(v.ref, "te")).join(" · ")}
       </div>
-      <div className="mt-3 flex items-center gap-1 border-t border-slate-100 pt-3">
+      <div className="mt-3 flex items-center gap-1 border-t border-stone-100 pt-3">
         <button className="btn-primary" onClick={() => router.push(`/present/${s.id}`)}><Play className="h-4 w-4" />{t("start")}</button>
         <Link className="btn-ghost" href={`/sermons/${s.id}`}><Pencil className="h-4 w-4" />{t("edit")}</Link>
         <button className="btn-ghost" onClick={() => duplicateSermon(s.id)}><Copy className="h-4 w-4" />{t("duplicate")}</button>

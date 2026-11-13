@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Church, LogIn } from "lucide-react";
+import { LogIn } from "lucide-react";
+import { ChurchLogo, Wordmark } from "@/components/ChurchLogo";
 import { useT } from "@/lib/i18n";
 
 export default function LoginPage() {
@@ -36,11 +37,11 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gradient-to-b from-indigo-50 to-slate-100 px-4">
+    <main className="flex min-h-screen items-center justify-center bg-[radial-gradient(ellipse_at_top,#fbf3dc_0%,#fbfaf7_60%)] px-4">
       <form onSubmit={submit} className="card w-full max-w-sm space-y-4 p-6">
-        <div className="flex items-center gap-2 text-lg font-semibold">
-          <Church className="h-6 w-6 text-indigo-600" />
-          {t("appName")}
+        <div className="flex flex-col items-center gap-2 pb-2 text-center">
+          <ChurchLogo className="h-24 w-24" shine onLight />
+          <Wordmark className="text-2xl" onLight />
         </div>
         <div>
           <label className="label" htmlFor="username">{t("username")}</label>

@@ -8,7 +8,7 @@ import { buildSlides, type VerseSlide } from "@/lib/bible/slides";
 import { TRANSLATION_BY_ID, translationLang } from "@/lib/bible/translations";
 import type { MediaItem } from "@/modules/media/types";
 import { newId, type Sermon, type VerseCue } from "@/modules/sermons/types";
-import { backgroundScene, INITIAL_STATE, type DisplayState, type LanguageMode, type MediaStatus, type Scene } from "./protocol";
+import { backgroundScene, INITIAL_STATE, type ChurchInfo, type DisplayState, type LanguageMode, type MediaStatus, type Scene } from "./protocol";
 import { createTransport, type PresenterTransport } from "./transport";
 
 export interface ActiveVerse {
@@ -18,12 +18,23 @@ export interface ActiveVerse {
   index: number;
 }
 
+/** pre = welcome screen before the sermon; live = preaching; ended = thank-you screen. */
+export type Phase = "pre" | "live" | "ended";
+
 interface Persisted {
   state: DisplayState;
   active: ActiveVerse | null;
   pointIndex: number;
   sessionId: string;
-  startedAt: number;
+  startedAt: number | null;
+  phase?: Phase;
+}
+
+export function churchInfo(s: ChurchSettings): ChurchInfo {
+  return {
+    name: s.name, nameTe: s.nameTe, tagline: s.tagline, pastorName: s.pastorName, address: s.address,
+    serviceTimes: s.serviceTimes, youtubeName: s.youtubeName, youtubeUrl: s.youtubeUrl,
+  };
 }
 
 const persistKey = (sermonId: string) => `presenter:${sermonId}`;
@@ -41,14 +52,18 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
     } catch { return null; }
   }, [sermon.id]);
 
-  const [state, setStateRaw] = useState<DisplayState>(() => restored?.state ?? {
+  const [state, setStateRaw] = useState<DisplayState>(() => ({
     ...INITIAL_STATE,
-    church: { name: settings.name, tagline: settings.tagline },
+    scene: { kind: "welcome" },
     languageMode: sermon.secondaryTranslation ? "both" : "primary",
-  });
+    ...(restored?.state ?? {}),
+    church: churchInfo(settings),
+    translations: { primary: sermon.primaryTranslation, secondary: sermon.secondaryTranslation },
+  }));
+  const [phase, setPhase] = useState<Phase>(restored?.phase ?? (restored?.startedAt ? "live" : "pre"));
   const [active, setActive] = useState<ActiveVerse | null>(restored?.active ?? null);
   const [pointIndex, setPointIndex] = useState(restored?.pointIndex ?? 0);
-  const [startedAt] = useState(() => restored?.startedAt ?? Date.now());
+  const [startedAt, setStartedAt] = useState<number | null>(restored?.startedAt ?? null);
   const [sessionId] = useState(() => restored?.sessionId ?? newId());
   const [lastPing, setLastPing] = useState(0);
   const [screenFullscreen, setScreenFullscreen] = useState(false);
@@ -56,6 +71,7 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
   const [now, setNow] = useState(() => Date.now());
 
   const stateRef = useRef(state);
+  const phaseRef = useRef(phase);
   const transport = useRef<PresenterTransport | null>(null);
   const events = useRef<SessionEvent[]>([]);
   /** Bumped on every screen change; async actions abort if a newer action happened meanwhile. */
@@ -89,17 +105,30 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
     return () => { off(); clearInterval(tick); tr.close(); };
   }, [broadcast]);
 
-  // Keep church name in sync with settings
+  // Keep church details and translations on the screen in sync with settings / the sermon
+  const info = useMemo(() => churchInfo(settings), [settings]);
   useEffect(() => {
-    if (state.church.name !== settings.name || state.church.tagline !== settings.tagline)
-      setState((s) => ({ ...s, church: { name: settings.name, tagline: settings.tagline } }));
-  }, [settings.name, settings.tagline, state.church, setState]);
+    const tr = { primary: sermon.primaryTranslation, secondary: sermon.secondaryTranslation };
+    if (JSON.stringify(state.church) !== JSON.stringify(info) || JSON.stringify(state.translations) !== JSON.stringify(tr))
+      setState((s) => ({ ...s, church: info, translations: tr }));
+  }, [info, sermon.primaryTranslation, sermon.secondaryTranslation, state.church, state.translations, setState]);
+
+  /** Leave the welcome screen phase: start the timer (first content shown, or "Begin"). */
+  const ensureLive = useCallback(() => {
+    if (phaseRef.current !== "pre") return;
+    phaseRef.current = "live";
+    setPhase("live");
+    const t = Date.now();
+    setStartedAt(t);
+    void db.sessions.update(sessionId, { startedAt: t });
+    events.current.push({ t, kind: "begin", label: "" });
+  }, [sessionId]);
 
   // Session record + crash recovery
   useEffect(() => {
     db.sessions.get(sessionId).then((existing) => {
       if (existing) events.current = existing.events;
-      else void db.sessions.put({ id: sessionId, churchId: DEFAULT_CHURCH_ID, sermonId: sermon.id, startedAt, events: [] });
+      else void db.sessions.put({ id: sessionId, churchId: DEFAULT_CHURCH_ID, sermonId: sermon.id, startedAt: startedAt ?? Date.now(), events: [] });
     });
     const save = setInterval(() => {
       if (events.current.length) void db.sessions.update(sessionId, { events: events.current });
@@ -109,9 +138,9 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
 
   useEffect(() => {
     try {
-      localStorage.setItem(persistKey(sermon.id), JSON.stringify({ state, active, pointIndex, sessionId, startedAt } satisfies Persisted));
+      localStorage.setItem(persistKey(sermon.id), JSON.stringify({ state, active, pointIndex, sessionId, startedAt, phase } satisfies Persisted));
     } catch { /* storage full or blocked */ }
-  }, [state, active, pointIndex, sessionId, startedAt, sermon.id]);
+  }, [state, active, pointIndex, sessionId, startedAt, phase, sermon.id]);
 
   // ---------- verses ----------
   const orderedVerseCues = useMemo(() => {
@@ -154,6 +183,7 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
     const slides = await loadSlides(ref, stateRef.current.languageMode);
     // The operator did something else while this passage loaded: the newer action wins.
     if (my !== actionSeq.current || !slides.length) return;
+    ensureLive();
     const av = { cueId, ref, slides, index: Math.max(0, Math.min(index, slides.length - 1)) };
     setActive(av);
     setState((s) => ({ ...s, scene: verseScene(av) }));
@@ -163,7 +193,7 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
       if (i >= 0) setPointIndex(i);
     }
     log("verse", formatReference(ref, "en"));
-  }, [loadSlides, setState, verseScene, sermon.verses, sermon.points, log]);
+  }, [loadSlides, setState, verseScene, sermon.verses, sermon.points, log, ensureLive]);
 
   const showVerseCue = useCallback((cue: VerseCue) => showVerse(cue.id, cue.ref), [showVerse]);
 
@@ -208,13 +238,14 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
   // ---------- media ----------
   const showMedia = useCallback((cueId: string, item: MediaItem) => {
     const nonce = newId();
+    ensureLive();
     setMediaStatus(null);
     setState((s) => ({
       ...s,
       scene: { kind: "media", cueId, nonce, mediaId: item.id, title: item.title, mediaKind: item.kind, source: item.source, fileId: item.fileId, youtubeId: item.youtubeId, startSec: item.startSec, endSec: item.endSec },
     }));
     log("media", item.title);
-  }, [setState, log]);
+  }, [setState, log, ensureLive]);
 
   const mediaCommand = useCallback((action: "play" | "pause" | "restart") => {
     const sc = stateRef.current.scene;
@@ -233,31 +264,44 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
   const blank = useCallback(() => { setState((s) => ({ ...s, scene: { kind: "blank" } })); log("blank", ""); }, [setState, log]);
   const logo = useCallback(() => { setState((s) => ({ ...s, scene: { kind: "logo" } })); log("logo", ""); }, [setState, log]);
   const title = useCallback(() => {
+    ensureLive();
     setState((s) => ({ ...s, scene: { kind: "title", title: sermon.title, subtitle: [sermon.speaker, sermon.serviceName].filter(Boolean).join(" · ") } }));
     log("title", sermon.title);
-  }, [setState, sermon.title, sermon.speaker, sermon.serviceName, log]);
+  }, [setState, sermon.title, sermon.speaker, sermon.serviceName, log, ensureLive]);
   const camera = useCallback(() => {
+    ensureLive();
     setState((s) => ({ ...s, cameraOn: true, scene: { kind: "camera" } }));
     log("camera", "");
-  }, [setState, log]);
+  }, [setState, log, ensureLive]);
   const setCameraOn = useCallback((on: boolean) => setState((s) => ({ ...s, cameraOn: on, scene: !on && s.scene.kind === "camera" ? { kind: "logo" } : s.scene })), [setState]);
   const setCameraDevice = useCallback((id: string | null) => setState((s) => ({ ...s, cameraDeviceId: id })), [setState]);
   const setOverlay = useCallback((on: boolean) => setState((s) => ({ ...s, overlayOnCamera: on })), [setState]);
   const setFontScale = useCallback((f: number) => setState((s) => ({ ...s, fontScale: Math.max(0.6, Math.min(1.6, Math.round(f * 10) / 10)) })), [setState]);
 
+  const welcome = useCallback(() => { setState((s) => ({ ...s, scene: { kind: "welcome" } })); log("welcome", ""); }, [setState, log]);
+  /** Explicit start: timer runs and the title slide goes up. */
+  const begin = useCallback(() => {
+    ensureLive();
+    setState((s) => ({ ...s, scene: { kind: "title", title: sermon.title, subtitle: [sermon.speaker, sermon.serviceName].filter(Boolean).join(" · ") } }));
+  }, [ensureLive, setState, sermon.title, sermon.speaker, sermon.serviceName]);
+
   const end = useCallback(async () => {
     await db.sessions.update(sessionId, { events: events.current, endedAt: Date.now() });
     await db.sermons.update(sermon.id, { status: "delivered", updatedAt: Date.now() });
     try { localStorage.removeItem(persistKey(sermon.id)); } catch { /* ignore */ }
-    setState((s) => ({ ...s, scene: { kind: "logo" } }));
+    phaseRef.current = "ended";
+    setPhase("ended");
+    // The thank-you screen stays up until the screen window is closed.
+    setState((s) => ({ ...s, scene: { kind: "ended" } }));
   }, [sessionId, sermon.id, setState]);
 
   return {
     state, active, pointIndex, setPointIndex, mediaStatus,
     screenConnected: now - lastPing < 4000, screenFullscreen,
-    elapsedSec: Math.floor((now - startedAt) / 1000),
+    phase,
+    elapsedSec: startedAt ? Math.max(0, Math.floor((now - startedAt) / 1000)) : 0,
     mediaById: new Map(media.map((m) => [m.id, m])),
-    actions: { showVerse, showVerseCue, gotoSlide, setLanguageMode, showMedia, mediaCommand, clear, blank, logo, title, camera, setCameraOn, setCameraDevice, setOverlay, setFontScale, end },
+    actions: { begin, welcome, showVerse, showVerseCue, gotoSlide, setLanguageMode, showMedia, mediaCommand, clear, blank, logo, title, camera, setCameraOn, setCameraDevice, setOverlay, setFontScale, end },
   };
 }
 

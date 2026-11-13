@@ -6,6 +6,8 @@ import { MediaPlayer, type MediaCommand } from "@/modules/presenter/MediaPlayer"
 import { INITIAL_STATE, type DisplayState, type MediaStatus } from "@/modules/presenter/protocol";
 import { createTransport, type PresenterTransport } from "@/modules/presenter/transport";
 import { useCameraStream } from "@/modules/presenter/useCamera";
+import { churchInfo } from "@/modules/presenter/useController";
+import { useChurch } from "@/lib/church/useChurch";
 
 const STORE_KEY = "display:last-state";
 
@@ -61,7 +63,9 @@ export default function DisplayPage() {
     return () => { document.removeEventListener("fullscreenchange", onFs); window.removeEventListener("keydown", onKey); window.removeEventListener("mousemove", onMove); clearTimeout(timer); };
   }, []);
 
-  const s = state ?? INITIAL_STATE;
+  const church = useChurch();
+  // Before the console connects, show the welcome board with the saved church profile.
+  const s = state ?? { ...INITIAL_STATE, scene: { kind: "welcome" as const }, church: churchInfo(church), translations: { primary: church.defaultPrimaryTranslation, secondary: church.defaultSecondaryTranslation } };
   const needCamera = s.cameraOn || s.scene.kind === "camera";
   const { stream } = useCameraStream(started && needCamera, s.cameraDeviceId);
 
