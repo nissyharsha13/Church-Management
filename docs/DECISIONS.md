@@ -39,3 +39,12 @@ Each entry says what we decided, why, and what would make us revisit it.
 - **Why**: one admin user for the prototype. There's no user database to run and no third-party account, and it works the same on Vercel and on the church laptop.
 - **Limits**: one account, no password-reset flow (generate a new hash with `npm run auth:hash`), and the login throttle (5 failures per 15 minutes per IP) is per server instance.
 - **Revisit when**: we add the media-person role or several churches. Then move to a real auth provider with per-user accounts and roles, together with the cloud database (Phase 4).
+
+### D-011: Telugu transliteration through an AI model (Vercel AI Gateway)
+- **What**: Each "తెలుగులో మార్చు" button (topic, gist, pointer titles, notes) sends the field to `/api/transliterate`. That route calls `anthropic/claude-haiku-5.5` (override with `AI_GATEWAY_MODEL`) through Vercel AI Gateway and replaces the field. Undo restores the previous text. Only the script changes, never the meaning; English words and verse references are kept.
+- **Why**: chosen by the pastor over offline rules (which can't spell casual "Tenglish" such as "devudu" → దేవుడు correctly) and over Google's unofficial input-tools endpoint (no API agreement).
+- **Auth/cost**: on Vercel the deployment authenticates with OIDC automatically. Running locally needs `AI_GATEWAY_API_KEY`. It costs about $0.0001 per conversion and is covered by AI Gateway's monthly free credit. Input is capped at 4,000 characters, and the route sits behind the admin login.
+- **Offline**: needs internet while planning only. Presenting never calls it.
+
+### D-012: Verse picking is select-first, type-second
+- **Why**: pastor feedback. A book dropdown grouped by testament, then chapter, then a grid of every verse (tap one verse, or tap the first and last for a range) is easier than typing. Typing stays as the second tab, and is also available in the console as "Quick verse". The same `VerseSelector` component powers the planner and the console's "Pick a verse".

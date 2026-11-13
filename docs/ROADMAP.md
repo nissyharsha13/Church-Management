@@ -16,11 +16,15 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - ✅ Verses: typed (TE/EN) or selected, with live bilingual preview, attached to a pointer or "general"
 - ✅ Media library: upload video or image (stored offline), YouTube links with start/end trim
 - ✅ Duplicate and delete sermons; sample sermon
+- ✅ Verse picker v2: testament-grouped books, chapter, tap-a-verse grid with ranges (D-012)
+- ✅ Save button + visible auto-save status; "Save & Start now"; collapsible pointer tiles
+- ✅ Telugu transliteration ("తెలుగులో మార్చు") for topic, gist, pointers, notes (D-011)
 - ⬜ Series (group sermons), sermon templates
 - ⬜ Search and filter in the sermon library (by book, speaker, series)
 
 ## Phase 2: Live console + display ✅ (single computer)
 - ✅ Console: pointers and notes, verse buttons, slide paging, quick verse, media buttons, live monitor, timer
+- ✅ Console v2: verse count + clickable verse chips on each pointer; general verses in their own section; "Pick a verse" (book → chapter → verse) to show any verse on the spot
 - ✅ Display window: verses (both / Telugu / English), auto-fitted text, title, logo, blank
 - ✅ Videos (offline files), images, YouTube (needs internet); play, pause, restart, stop; back to the background when a clip ends
 - ✅ Keyboard and clicker shortcuts; font size control

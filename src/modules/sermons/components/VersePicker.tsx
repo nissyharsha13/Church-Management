@@ -2,68 +2,65 @@
 
 import { useMemo, useState } from "react";
 import { Keyboard, ListFilter, Plus } from "lucide-react";
-import { BOOKS, bookName, chapterCount, verseCount } from "@/lib/bible/canon";
+import { bookName } from "@/lib/bible/canon";
 import { formatReference, parseReference, suggestBooks, type VerseRef } from "@/lib/bible/reference";
 import { usePassage } from "@/lib/bible/usePassage";
 import { translationLang } from "@/lib/bible/translations";
 import { useT, useUILang } from "@/lib/i18n";
+import { EMPTY_SELECTION, selectionToRef, VerseSelector, type VerseSelection } from "@/components/bible/VerseSelector";
 
 interface Props {
   primaryTranslation: string;
   secondaryTranslation: string;
   onAdd: (ref: VerseRef) => void;
-  /** Extra controls rendered next to the Add button (e.g. "attach to" select) */
-  extra?: React.ReactNode;
-  autoFocus?: boolean;
+  /** Book/chapter to start from (e.g. the last one used), verses always start unselected. */
+  initialSelection?: VerseSelection;
 }
 
 /**
- * Two ways to pick: type a reference (English or Telugu), or use the
- * book / chapter / verse selectors. Both show a live preview.
+ * Two ways to pick: (1) select book → chapter → tap verses (default), or
+ * (2) type a reference in English or Telugu. Both show a live preview.
  */
-export function VersePicker({ primaryTranslation, secondaryTranslation, onAdd, extra, autoFocus }: Props) {
+export function VersePicker({ primaryTranslation, secondaryTranslation, onAdd, initialSelection }: Props) {
   const t = useT();
   const lang = useUILang();
+  const [mode, setMode] = useState<"select" | "type">("select");
+  const [sel, setSel] = useState<VerseSelection>(initialSelection ? { ...initialSelection, start: null, end: null } : EMPTY_SELECTION);
   const [text, setText] = useState("");
-  const [sel, setSel] = useState<VerseRef>({ book: "JHN", chapter: 3, start: 16, end: 16 });
-  const [mode, setMode] = useState<"type" | "select">("type");
 
   const typed = useMemo(() => (text.trim() ? parseReference(text) : null), [text]);
-  const ref = mode === "type" ? typed : sel;
+  const ref = mode === "type" ? typed : selectionToRef(sel);
   const suggestions = useMemo(() => {
     const bookPart = text.replace(/\d+[\s:.,-]*\d*[\s-]*\d*$/, "").trim();
     return !typed && bookPart ? suggestBooks(bookPart, 6) : [];
   }, [text, typed]);
 
   const add = () => {
-    if (!ref) return;
-    onAdd(ref);
-    setText("");
+    if (ref) onAdd(ref);
   };
-
-  const chapters = chapterCount(sel.book);
-  const verses = verseCount(sel.book, sel.chapter);
 
   return (
     <div className="space-y-3">
-      <div className="flex gap-1 text-xs">
-        {(["type", "select"] as const).map((m) => (
-          <button key={m} onClick={() => setMode(m)} className={`flex items-center gap-1 rounded-md px-2 py-1 ${mode === m ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"}`}>
-            {m === "type" ? <><Keyboard className="h-3.5 w-3.5" />Type</> : <><ListFilter className="h-3.5 w-3.5" />Select</>}
+      <div className="flex gap-1 text-xs" role="tablist">
+        {(["select", "type"] as const).map((m) => (
+          <button key={m} role="tab" aria-selected={mode === m} onClick={() => setMode(m)} className={`flex items-center gap-1 rounded-md px-2.5 py-1 ${mode === m ? "bg-slate-900 text-white" : "bg-slate-100 text-slate-600"}`}>
+            {m === "select" ? <><ListFilter className="h-3.5 w-3.5" />{t("selectTab")}</> : <><Keyboard className="h-3.5 w-3.5" />{t("typeTab")}</>}
           </button>
         ))}
       </div>
 
-      {mode === "type" ? (
+      {mode === "select" ? (
+        <VerseSelector value={sel} onChange={setSel} />
+      ) : (
         <div>
           <input
             className="input text-base"
-            autoFocus={autoFocus}
+            autoFocus
             placeholder={t("verseSearchHint")}
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => e.key === "Enter" && add()}
-            aria-label={t("addVerse")}
+            aria-label={t("typeReference")}
           />
           {suggestions.length > 0 && (
             <div className="mt-1 flex flex-wrap gap-1">
@@ -76,32 +73,20 @@ export function VersePicker({ primaryTranslation, secondaryTranslation, onAdd, e
           )}
           {text.trim() && !typed && suggestions.length === 0 && <p className="mt-1 text-xs text-red-600">{t("invalidRef")}</p>}
         </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-          <select className="input col-span-2 sm:col-span-1" value={sel.book} onChange={(e) => setSel({ book: e.target.value, chapter: 1, start: 1, end: 1 })}>
-            {BOOKS.map((b) => <option key={b.id} value={b.id}>{b.names.te.name} · {b.names.en.name}</option>)}
-          </select>
-          <select className="input" value={sel.chapter} onChange={(e) => setSel({ ...sel, chapter: +e.target.value, start: 1, end: 1 })} aria-label="Chapter">
-            {Array.from({ length: chapters }, (_, i) => <option key={i} value={i + 1}>{i + 1}</option>)}
-          </select>
-          <div className="flex items-center gap-1">
-            <select className="input" value={sel.start} onChange={(e) => setSel({ ...sel, start: +e.target.value, end: Math.max(+e.target.value, sel.end) })} aria-label="From verse">
-              {Array.from({ length: verses }, (_, i) => <option key={i} value={i + 1}>{i + 1}</option>)}
-            </select>
-            <span className="text-slate-400">–</span>
-            <select className="input" value={sel.end} onChange={(e) => setSel({ ...sel, end: +e.target.value })} aria-label="To verse">
-              {Array.from({ length: verses - sel.start + 1 }, (_, i) => <option key={i} value={sel.start + i}>{sel.start + i}</option>)}
-            </select>
-          </div>
-        </div>
       )}
 
-      {ref && <PassagePreview refValue={ref} primary={primaryTranslation} secondary={secondaryTranslation} />}
+      {ref && (
+        <>
+          <div className="text-sm font-semibold text-indigo-700" data-testid="selection-summary">
+            {formatReference(ref, "te")} <span className="font-normal text-slate-500">· {formatReference(ref, "en")}</span>
+          </div>
+          <PassagePreview refValue={ref} primary={primaryTranslation} secondary={secondaryTranslation} />
+        </>
+      )}
 
-      <div className="flex flex-wrap items-center gap-2">
-        {extra}
-        <button className="btn-primary" disabled={!ref} onClick={add}><Plus className="h-4 w-4" />{t("addVerse")}</button>
-      </div>
+      <button className="btn-primary" disabled={!ref} onClick={add} data-testid="confirm-add-verse">
+        <Plus className="h-4 w-4" />{t("addThisVerse")}
+      </button>
     </div>
   );
 }

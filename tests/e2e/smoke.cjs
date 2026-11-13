@@ -48,22 +48,62 @@ fs.mkdirSync(OUT, { recursive: true });
   ok(true, "sample sermon created");
   await page.screenshot({ path: `${OUT}/1-dashboard.png` });
 
-  // 2. Editor: add a verse by typing a Telugu reference
+  // 2. Editor: pointers collapsed into tiles; expand, pick a verse from the grid
   await page.getByRole("link", { name: /Faith in the Storm/ }).first().click();
-  await page.getByLabel("Topic / title").waitFor();
+  await page.getByLabel("Topic / title", { exact: true }).waitFor();
+  ok(await page.getByTestId("point-tile").count() === 3 && await page.getByTestId("point").count() === 0, "filled pointers start collapsed as tiles");
+  ok((await page.getByTestId("point-tile").first().innerText()).includes("మార్కు 4:35-38"), "collapsed tile lists its verses");
+  await page.getByTestId("point-tile").first().click();
   const firstPoint = page.getByTestId("point").first();
-  await firstPoint.getByRole("button", { name: /Add verse/ }).first().click();
-  await firstPoint.getByLabel("Add verse").fill("రోమా 8:28");
+  await firstPoint.getByTestId("open-verse-picker").click();
+  await firstPoint.getByLabel("Select book").selectOption("ROM");
+  await firstPoint.getByLabel("Chapter").selectOption("8");
+  ok(await firstPoint.getByTestId("verse-tile").count() === 39, "chapter shows a tile for every verse (Romans 8 = 39)");
+  await firstPoint.getByTestId("verse-tile").nth(27).click();
+  await firstPoint.getByTestId("verse-tile").nth(29).click();
+  await firstPoint.getByTestId("selection-summary").waitFor();
+  ok((await firstPoint.getByTestId("selection-summary").innerText()).includes("రోమా 8:28-30"), "tapping first + last verse selects a range");
   await page.getByText("సమస్తమును").first().waitFor({ timeout: 10000 }).catch(() => {});
   await page.screenshot({ path: `${OUT}/2-editor.png`, fullPage: false });
-  await firstPoint.getByLabel("Add verse").press("Enter");
-  await page.waitForTimeout(900); // autosave debounce
-  ok((await firstPoint.getByTestId("verse-cue").allInnerTexts()).some((t) => t.includes("8:28")), "Telugu reference added to pointer 1");
+  await firstPoint.getByTestId("confirm-add-verse").click();
+  ok((await firstPoint.getByTestId("verse-cue").allInnerTexts()).some((t) => t.includes("8:28-30")), "range added to pointer 1");
+  ok(await firstPoint.getByTestId("verse-tile").count() === 0, "picker closes after adding");
+  ok(/Add another verse/.test(await firstPoint.getByTestId("open-verse-picker").innerText()), "button now says 'Add another verse'");
+  await firstPoint.getByTestId("open-verse-picker").click();
+  ok(await firstPoint.getByTestId("verse-tile").count() === 39 && await firstPoint.locator("[data-testid=verse-tile][aria-pressed=true]").count() === 0, "reopened picker keeps book/chapter but starts with no verse selected");
+  // second way: typing
+  await firstPoint.getByRole("tab", { name: "Type" }).click();
+  await firstPoint.getByLabel("Type a reference").fill("యోహాను 16:33");
+  await firstPoint.getByLabel("Type a reference").press("Enter");
+  ok((await firstPoint.getByTestId("verse-cue").allInnerTexts()).some((t) => t.includes("16:33")), "typed Telugu reference added");
 
-  // 3. Console
-  await page.getByRole("button", { name: /^Start$/ }).click();
+  // save feedback
+  await page.getByRole("button", { name: "Save", exact: true }).click();
+  await page.getByTestId("save-status").getByText("All changes saved").waitFor();
+  ok(true, "Save shows 'All changes saved'");
+
+  // adding a pointer collapses the others
+  await page.getByTestId("add-point").click();
+  ok(await page.getByTestId("point").count() === 1 && await page.getByTestId("point-tile").count() === 3, "new pointer is expanded, others collapse");
+  // remove the empty pointer again
+  page.once("dialog", (d) => d.accept());
+  await page.getByTestId("point").getByRole("button", { name: "Delete" }).click();
+
+  // Telugu conversion button exists (needs AI Gateway; locally it must fail gracefully)
+  await page.getByLabel("Topic / title", { exact: true }).fill("devudu manatho unnadu");
+  await page.getByRole("button", { name: /తెలుగులో మార్చు — Topic/ }).click();
+  await page.getByRole("status").filter({ hasText: /set up|convert|internet/i }).or(page.locator("#title[value*='దేవుడు']")).first().waitFor({ timeout: 15000 });
+  ok(true, "Telugu convert responds (converted, or a clear message when not configured)");
+  await page.getByLabel("Topic / title", { exact: true }).fill("తుఫానులో విశ్వాసం — Faith in the Storm");
+  await page.waitForTimeout(900);
+
+  // 3. Console via "Save & Start now"
+  await page.getByRole("button", { name: /Save & Start now/ }).click();
   await page.waitForURL(/\/present\//);
   await page.getByTestId("console-verse").first().waitFor();
+  const counts = await page.getByTestId("point-verse-count").allInnerTexts();
+  ok(counts[0].trim() === "3", "console pointer shows its verse count");
+  ok((await page.getByTestId("general-verses").innerText()).includes("Psalms 23"), "general verses are in their own section at the bottom");
 
   // 4. Open display window
   const [display] = await Promise.all([ctx.waitForEvent("page"), page.getByTestId("open-screen").click()]);
@@ -104,6 +144,23 @@ fs.mkdirSync(OUT, { recursive: true });
   await display.getByText(/For God so loved/).waitFor({ timeout: 5000 });
   ok(true, "quick verse (unplanned) shows on display");
 
+  // 8b. Pick any verse via book/chapter/verse selector
+  await page.getByTestId("pick-verse").click();
+  await page.getByLabel("Select book").selectOption("PSA");
+  await page.getByLabel("Chapter").selectOption("121");
+  await page.getByTestId("verse-tile").nth(0).click();
+  await page.getByTestId("verse-tile").nth(1).click();
+  await page.getByTestId("pick-show").click();
+  await display.getByText("Psalms 121:1-2").first().waitFor({ timeout: 5000 });
+  ok(true, "'Pick a verse' shows any verse on the spot");
+  await page.screenshot({ path: `${OUT}/3b-console-pick.png` });
+  await page.getByTestId("pick-verse").click();
+
+  // 8c. Verse chip on a pointer shows that verse
+  await page.getByTestId("point-verse-chip").filter({ hasText: "యెషయా" }).click();
+  await display.getByText("Isaiah 43:2").first().waitFor({ timeout: 5000 });
+  ok(true, "pointer verse chip shows the verse");
+
   // 9. Blank / logo / camera
   await page.getByTestId("btn-blank").click();
   await display.waitForTimeout(300);
@@ -138,7 +195,8 @@ fs.mkdirSync(OUT, { recursive: true });
   await lib.screenshot({ path: `${OUT}/8-library.png` });
   const sermonUrl = page.url().replace("/present/", "/sermons/");
   await lib.goto(sermonUrl);
-  const p2 = lib.getByTestId("point").nth(1);
+  await lib.getByTestId("point-tile").nth(1).click();
+  const p2 = lib.getByTestId("point").first();
   await p2.getByRole("button", { name: /Add from library/ }).click();
   for (const name of ["clip", "cross", "Storm clip (YouTube)"]) await p2.getByRole("button", { name, exact: true }).click();
   await lib.waitForTimeout(1000);
