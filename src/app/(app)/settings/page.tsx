@@ -11,6 +11,7 @@ import { ChurchLogo } from "@/components/ChurchLogo";
 import { FieldLabel } from "@/components/TeluguConvert";
 import { Stage } from "@/modules/presenter/Stage";
 import { INITIAL_STATE, type DisplayState } from "@/modules/presenter/protocol";
+import { StreamingSettings } from "@/modules/streaming/StreamingSettings";
 
 const ALL_BOOKS = BOOKS.map((b) => b.id);
 
@@ -143,6 +144,8 @@ export default function SettingsPage() {
       <div className="sticky bottom-4 z-10 flex justify-end">
         <button className="btn-primary px-6 shadow-lg" onClick={save} data-testid="settings-save">{saved ? <Check className="h-4 w-4" /> : null}{saved ? t("saved") : t("save")}</button>
       </div>
+
+      <StreamingSettings />
 
       <section className="card p-5">
         <h2 className="mb-1 font-semibold">{t("offlineBibles")}</h2>

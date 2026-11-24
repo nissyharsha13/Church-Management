@@ -35,6 +35,10 @@ To change the password, run the command again and replace `ADMIN_PASSWORD_HASH`,
 
 The app is deployed on Vercel from the `main` branch; every push redeploys. Sermons and media are still stored **in the browser of the computer you use** (D-002), so use the same computer and browser for planning and presenting until cloud sync arrives.
 
+## Live streaming
+
+The app creates the YouTube broadcast and controls **OBS**, which sends the video. From the console you can go live, switch cameras, mute mics and end the stream. Chapters are added to the YouTube description afterwards. One-time setup: [docs/STREAMING-SETUP.md](docs/STREAMING-SETUP.md), which needs `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` on Vercel.
+
 ## Using it on Sunday
 
 1. **Plan**: *Sermons → New sermon*. Add pointers, then add verses to each pointer. You can type `యోహాను 3:16` or `John 3:16`, or use the book/chapter/verse selector. Upload clips in *Media library* and attach them.
@@ -58,7 +62,8 @@ The app is deployed on Vercel from the `main` branch; every push redeploys. Serm
 ```bash
 npm test                         # unit tests (reference parser, slides)
 npm start -- -p 3100 &           # then:
-E2E_PASSWORD='…' npm run test:e2e   # browser test: login → planner → console → display (24 checks)
+E2E_PASSWORD='…' npm run test:e2e         # browser test: login → planner → console → display
+E2E_PASSWORD='…' npm run test:e2e:stream  # YouTube + OBS flow against local mocks
 ```
 
 ## Project docs

@@ -21,6 +21,10 @@ export interface ChurchSettings {
   logoDataUrl: string;
   /** Render the logo as a glossy gold silhouette (needs a transparent logo). */
   logoGold: boolean;
+  /** Default privacy for new YouTube broadcasts */
+  streamPrivacy: "public" | "unlisted" | "private";
+  /** Go live automatically when YouTube starts receiving video (otherwise press Go live) */
+  streamAutoStart: boolean;
   uiLanguage: "en" | "te";
   defaultPrimaryTranslation: string;
   defaultSecondaryTranslation: string;
@@ -61,6 +65,8 @@ export const DEFAULT_SETTINGS: ChurchSettings = {
   youtubeUrl: "",
   logoDataUrl: "",
   logoGold: true,
+  streamPrivacy: "public",
+  streamAutoStart: false,
   uiLanguage: "en",
   defaultPrimaryTranslation: "te-irv",
   defaultSecondaryTranslation: "en-kjv",

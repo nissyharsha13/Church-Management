@@ -43,9 +43,21 @@ export interface Sermon {
   /** Translation shown first (Telugu by default) and the one shown under it. */
   primaryTranslation: string;
   secondaryTranslation: string;
+  /** YouTube live broadcast created for this sermon (see docs/DECISIONS.md D-016) */
+  youtube?: YouTubeLink;
   createdAt: number;
   updatedAt: number;
 }
+
+export interface YouTubeLink {
+  broadcastId: string;
+  url: string;
+  studioUrl: string;
+  privacy: StreamPrivacy;
+  scheduledStart: string;
+}
+
+export type StreamPrivacy = "public" | "unlisted" | "private";
 
 export function newId(): string {
   return crypto.randomUUID();

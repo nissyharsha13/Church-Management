@@ -40,9 +40,15 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - ⬜ **Offline app start**: a service worker so the app opens with no internet. Bibles and media already work offline; the app pages need the local server, which is fine when running `npm start` on the church laptop
 - ⬜ Window Management permission prompt and guidance for placing the screen window automatically
 
-## Phase 3: Cameras & livestream (next iteration)
+## Phase 3: Cameras & livestream
+- ✅ YouTube connection: schedule broadcasts from sermons, permanent stream key, go live / end, viewers, auto chapters (D-016)
+- ✅ OBS remote control: push key, start/stop, scene (camera) buttons, mic mute + level meters
+- ⬜ Map console actions to OBS scenes automatically (e.g. verse → "Screen + Pulpit")
+- ⬜ Separate "stream layout" screen (lower-third verses over camera for online viewers)
+- ⬜ Thumbnail from the title slide; live chat on the console
+- ⬜ Optional: own relay server (WebRTC → RTMP) for streaming without OBS
 - ⬜ Multiple cameras; switch between them; picture-in-picture layouts
-- ⬜ Decide: browser cameras only, or control OBS (obs-websocket) for camera switching and the YouTube stream. See D-007
+- ✅ Decided: OBS does cameras/mics/encoding, the app controls it (D-016)
 - ⬜ IP/PTZ/NDI cameras, which need a desktop helper (Tauri/Electron) or OBS
 - ⬜ Verse overlays on the livestream output
 

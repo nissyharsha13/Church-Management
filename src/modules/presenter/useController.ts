@@ -304,6 +304,9 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
     state, active, pointIndex, setPointIndex, mediaStatus,
     screenConnected: now - lastPing < 4000, screenFullscreen,
     phase,
+    sessionId,
+    /** Live session log (what was shown, when) — includes events not yet saved to the database. */
+    getEvents: () => [...events.current],
     elapsedSec: startedAt ? Math.max(0, Math.floor((now - startedAt) / 1000)) : 0,
     mediaById: new Map(media.map((m) => [m.id, m])),
     actions: { begin, welcome, prayer, showVerse, showVerseCue, gotoSlide, setLanguageMode, showMedia, mediaCommand, clear, blank, logo, title, camera, setCameraOn, setCameraDevice, setOverlay, setFontScale, end },

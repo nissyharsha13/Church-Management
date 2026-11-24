@@ -24,6 +24,8 @@ import { EMPTY_SELECTION, selectionToRef, VerseSelector, type VerseSelection } f
 import { TeluguConvert } from "@/components/TeluguConvert";
 import { PRAYER_TOPICS } from "@/modules/presenter/occasion";
 import { Candle } from "@/modules/presenter/PrayerScene";
+import { useObs } from "@/modules/streaming/useObs";
+import { StreamPanel, useLiveStream } from "@/modules/streaming/LiveStream";
 
 export default function PresentConsole({ id }: { id: string }) {
   const sermon = useLiveQuery(() => db.sermons.get(id), [id]);
@@ -38,6 +40,10 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
   const t = useT();
   const router = useRouter();
   const c = useController(sermon, settings, media);
+  // OBS connects automatically on computers where it was set up in Settings.
+  const [obsAuto] = useState(() => { try { return !!localStorage.getItem("obs:connection"); } catch { return false; } });
+  const obs = useObs({ autoConnect: obsAuto });
+  const live = useLiveStream(sermon, c.getEvents, obs);
   const { state, actions } = c;
   const [showKeys, setShowKeys] = useState(false);
   const [showPrayer, setShowPrayer] = useState(false);
@@ -82,6 +88,7 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
 
   const endSermon = async () => {
     if (!confirm(`${t("endSession")}?`)) return;
+    if (live.isLive && confirm(t("alsoEndStream"))) await live.endStream();
     await actions.end();
     router.push("/");
   };
@@ -167,6 +174,7 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
         <VersesPanel sermon={sermon} c={c} />
         <div className="flex min-h-0 flex-col gap-3 lg:overflow-y-auto">
           <LiveMonitor c={c} />
+          <StreamPanel live={live} obs={obs} sermon={sermon} />
           <MediaPanel sermon={sermon} c={c} />
           <CameraPanel c={c} />
         </div>

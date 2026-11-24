@@ -15,6 +15,7 @@ import { PassagePreview, VersePicker } from "@/modules/sermons/components/VerseP
 import { useSermonDraft } from "@/modules/sermons/useSermonDraft";
 import { newId, type Sermon, type SermonPoint, type SermonStatus } from "@/modules/sermons/types";
 import { MediaIcon } from "@/modules/media/components/MediaIcon";
+import { SermonStreamCard } from "@/modules/streaming/SermonStreamCard";
 
 type Update = (fn: (s: Sermon) => Sermon) => void;
 
@@ -134,6 +135,8 @@ export default function SermonEditor({ id }: { id: string }) {
           <Plus className="h-4 w-4" />{t("addPoint")}
         </button>
       </section>
+
+      <SermonStreamCard sermon={sermon} update={update} />
 
       {/* General verses + media */}
       <section className="card space-y-3 p-5">

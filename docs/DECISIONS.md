@@ -70,3 +70,20 @@ Each entry says what we decided, why, and what would make us revisit it.
 - **Look**: a calm visual (candle with a breathing glow) rather than text-heavy slides, so the screen supports the prayer without competing with it.
 - **With the camera**: when the camera is the background and "Verses over camera" is on, it shows as a lower third, so people can still see who is praying.
 - **Timer**: showing the prayer screen does not start the sermon timer, because opening prayer often comes before the message.
+
+### D-016: Live streaming = OBS (encoder) + our app (YouTube API + OBS remote control)
+- **Why not stream from the browser:** web pages can't open the RTMP connection YouTube's live ingest expects. Something on the laptop has to send the video. We chose **OBS**: free and widely used by churches. The alternatives were a paid cloud relay, or our own relay server (WebRTC → RTMP). Building our own encoder app (about 2–3 months) was rejected for now.
+- **YouTube:**
+  - Google OAuth (`youtube` scope) through `/api/youtube/*`. The refresh token is AES-GCM encrypted (key derived from `AUTH_SECRET`) in an httpOnly cookie scoped to `/api/youtube`, so there is no database.
+  - **One reusable stream per channel**, which means a permanent stream key: OBS is configured once, and every weekly broadcast binds to it.
+  - Broadcasts are created from the sermon (title, gist, verses, church details, service time), with the monitor stream disabled so they go straight from ready to live.
+  - Auto-start is optional (Settings).
+  - After **End stream**, chapters are written into the description from the session log (what was shown and when).
+- **OBS:** controlled from the browser with obs-websocket v5 (built into OBS 28+) at `ws://127.0.0.1:4455`. The console can push the YouTube key, start/stop streaming, switch scenes (cameras) and mute mics with live meters. The OBS password is stored only on that computer.
+- **Limits:**
+  - The YouTube connection is per browser (cookie), like the rest of the local-first data (D-002).
+  - Google shows an "unverified app" warning until Google reviews the app (only needed for wide distribution).
+  - The OAuth app must be **published** ("In production") or tokens expire every 7 days.
+  - Chrome may ask once to allow local-network access to reach OBS.
+- **Tests:** `tests/e2e/mocks.cjs` provides a fake Google/YouTube and a fake OBS speaking the real v5 protocol. `npm run test:e2e:stream` runs the whole flow.
+- **Setup:** docs/STREAMING-SETUP.md.

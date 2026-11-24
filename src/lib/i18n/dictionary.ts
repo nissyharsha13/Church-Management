@@ -153,6 +153,7 @@ export const dictionary = {
   customPrayerTopic: { en: "Or type a topic (e.g. for exams, for travel)", te: "లేదా అంశం టైప్ చేయండి" },
   prayerLeader: { en: "Led by", te: "నడిపించువారు" },
   close: { en: "Close", te: "మూసివేయి" },
+  alsoEndStream: { en: "The YouTube stream is live. End the live stream too?", te: "YouTube ప్రత్యక్ష ప్రసారం జరుగుతోంది. దాన్ని కూడా ముగించాలా?" },
   pickVerse: { en: "Pick a verse", te: "వచనం ఎంచుకోండి" },
   showOnScreen: { en: "Show on screen", te: "స్క్రీన్‌పై చూపించు" },
   generalVerses: { en: "General verses", te: "సాధారణ వచనాలు" },

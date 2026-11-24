@@ -11,7 +11,8 @@
     "test:e2e": "node tests/e2e/smoke.cjs",
     "bibles:fetch": "bash scripts/bibles/fetch-sources.sh .bible-sources",
     "bibles:build": "node scripts/bibles/build.mjs .bible-sources",
-    "auth:hash": "node scripts/auth/hash-password.mjs"
+    "auth:hash": "node scripts/auth/hash-password.mjs",
+    "test:e2e:stream": "node tests/e2e/streaming.cjs"
   },
   "dependencies": {
     "@fontsource-variable/noto-sans": "^5.3.0",
@@ -22,6 +23,7 @@
     "dexie-react-hooks": "^4.4.0",
     "lucide-react": "^1.72.0",
     "next": "16.4.6",
+    "obs-websocket-js": "^5.0.8",
     "qrcode": "^1.5.4",
     "react": "19.3.0",
     "react-dom": "19.3.0",
@@ -37,6 +39,7 @@
     "eslint-config-next": "16.4.6",
     "tailwindcss": "4.3.3",
     "typescript": "^5",
-    "vitest": "^5.1.0"
+    "vitest": "^5.1.0",
+    "ws": "^8.23.0"
   }
 }
