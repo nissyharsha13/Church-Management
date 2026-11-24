@@ -172,6 +172,20 @@ fs.mkdirSync(OUT, { recursive: true });
   await display.getByText("Isaiah 43:2").first().waitFor({ timeout: 5000 });
   ok(true, "pointer verse chip shows the verse");
 
+  // 8d. Prayer screen: invitation, leader, topic preset
+  await page.getByTestId("btn-prayer").click();
+  await display.getByTestId("prayer-scene").waitFor({ timeout: 5000 });
+  const pr = await display.getByTestId("prayer-scene").innerText();
+  ok(/మనం ప్రార్థన చేద్దాం/.test(pr) && /Let us pray/i.test(pr), "prayer screen invites everyone to pray (TE + EN)");
+  ok(/Prasanna Kumar/.test(pr) && /join in prayer/.test(pr), "prayer screen shows who leads and asks people to join");
+  await page.getByTestId("prayer-panel").getByRole("button", { name: /Prayer for the sick/ }).click();
+  await display.getByTestId("prayer-topic").getByText(/రోగుల కొరకు/).waitFor({ timeout: 5000 });
+  ok(true, "prayer topic preset appears on the screen");
+  await display.getByTestId("prayer-verse").waitFor({ timeout: 8000 });
+  await display.waitForTimeout(1300);
+  await display.screenshot({ path: `${OUT}/4c-display-prayer.png` });
+  await page.screenshot({ path: `${OUT}/3c-console-prayer.png` });
+
   // 9. Blank / logo / camera
   await page.getByTestId("btn-blank").click();
   await display.waitForTimeout(300);
@@ -180,6 +194,12 @@ fs.mkdirSync(OUT, { recursive: true });
   await page.getByRole("button", { name: /^Camera$/ }).first().click();
   await display.waitForTimeout(1500);
   ok(await display.locator("video").count() > 0, "camera feed shown on display");
+  await page.keyboard.press("Escape");
+  await page.locator("body").click({ position: { x: 5, y: 5 } }).catch(() => {});
+  await page.keyboard.press("r");
+  await display.getByTestId("prayer-overlay").waitFor({ timeout: 5000 });
+  ok(true, "with the camera on, prayer shows as a lower third over the camera (R shortcut)");
+  await display.screenshot({ path: `${OUT}/6b-display-prayer-camera.png` });
   await page.getByLabel("Quick verse").fill("Psalm 46:1");
   await page.getByLabel("Quick verse").press("Enter");
   await display.waitForTimeout(800);

@@ -16,6 +16,8 @@ export type Scene =
   | { kind: "welcome" }
   /** After the sermon: thank-you, clock, a verse for the week */
   | { kind: "ended" }
+  /** Invite the congregation to join in prayer while someone prays */
+  | { kind: "prayer"; topicTe: string; topicEn: string; leader: string }
   | { kind: "title"; title: string; subtitle: string }
   | { kind: "camera" }
   | {

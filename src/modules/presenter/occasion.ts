@@ -54,6 +54,39 @@ export const ENDED_VERSES: VerseRef[] = [
   r("JOS", 1, 8),
 ];
 
+/** Prayer: asking, trusting, praying together. Short so they read in a glance. */
+export const PRAYER_VERSES: VerseRef[] = [
+  r("PHP", 4, 6, 7),
+  r("MAT", 18, 19, 20),
+  r("1TH", 5, 17),
+  r("JER", 33, 3),
+  r("JAS", 5, 16),
+  r("MAT", 7, 7),
+  r("PSA", 145, 18),
+  r("1JN", 5, 14),
+  r("MRK", 11, 24),
+  r("HEB", 4, 16),
+  r("1PE", 5, 7),
+  r("PSA", 141, 2),
+  r("ROM", 12, 12),
+  r("2CH", 7, 14),
+  r("JHN", 14, 13, 14),
+  r("PSA", 62, 8),
+];
+
+/** Quick topics for the prayer screen (console presets). Telugu to be reviewed by a native speaker. */
+export const PRAYER_TOPICS: { te: string; en: string }[] = [
+  { te: "", en: "" },
+  { te: "ప్రారంభ ప్రార్థన", en: "Opening prayer" },
+  { te: "రోగుల కొరకు ప్రార్థన", en: "Prayer for the sick" },
+  { te: "కుటుంబాల కొరకు ప్రార్థన", en: "Prayer for families" },
+  { te: "మన దేశం కొరకు ప్రార్థన", en: "Prayer for our nation" },
+  { te: "సంఘం కొరకు ప్రార్థన", en: "Prayer for the church" },
+  { te: "కృతజ్ఞతా ప్రార్థన", en: "Prayer of thanksgiving" },
+  { te: "ముగింపు ప్రార్థన", en: "Closing prayer" },
+  { te: "ఆశీర్వాద ప్రార్థన", en: "Prayer of blessing" },
+];
+
 /** How long each verse stays before the next one fades in. */
 export const VERSE_ROTATE_MS = 40_000;
 
@@ -88,4 +121,12 @@ export const MESSAGES = {
   ended: { te: "వాక్య సందేశం ముగిసింది — వచ్చినందుకు ధన్యవాదాలు", en: "The message has ended — thank you for joining us" },
   blessing: { te: "దేవుడు మిమ్మల్ని దీవించును గాక", en: "God bless you" },
   thanks: { te: "ధన్యవాదాలు", en: "Thank you" },
+  prayerTitle: { te: "మనం ప్రార్థన చేద్దాం", en: "Let us pray" },
+  prayerInvite: { te: "దయచేసి తలలు వంచి, కన్నులు మూసుకుని ప్రార్థనలో పాల్గొనండి", en: "Please bow your heads, close your eyes and join in prayer" },
+  prayerLedBy: { te: "ప్రార్థన నడిపించువారు", en: "Led by" },
 };
+
+/** Wrap a verse in quotes, removing any quote marks the translation already has at the ends. */
+export function quoted(text: string): string {
+  return `“${text.trim().replace(/^[“”"‘’']+/, "").replace(/[“”"‘’']+$/, "")}”`;
+}

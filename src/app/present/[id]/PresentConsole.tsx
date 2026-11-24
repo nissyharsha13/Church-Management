@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import {
-  ArrowLeft, BookOpen, Camera, ChevronLeft, ChevronRight, Circle, Eraser, Keyboard, ListFilter, Sparkles, Maximize2, Minus, MonitorUp, Pause,
+  ArrowLeft, BookOpen, Camera, ChevronLeft, ChevronRight, Circle, Eraser, Flame, Keyboard, ListFilter, Sparkles, Maximize2, Minus, MonitorUp, Pause,
   Play, Plus, RotateCcw, Square, Type, Video,
 } from "lucide-react";
 import { db, type ChurchSettings } from "@/lib/db";
@@ -21,6 +21,9 @@ import { useController, type Controller } from "@/modules/presenter/useControlle
 import type { LanguageMode } from "@/modules/presenter/protocol";
 import type { Sermon } from "@/modules/sermons/types";
 import { EMPTY_SELECTION, selectionToRef, VerseSelector, type VerseSelection } from "@/components/bible/VerseSelector";
+import { TeluguConvert } from "@/components/TeluguConvert";
+import { PRAYER_TOPICS } from "@/modules/presenter/occasion";
+import { Candle } from "@/modules/presenter/PrayerScene";
 
 export default function PresentConsole({ id }: { id: string }) {
   const sermon = useLiveQuery(() => db.sermons.get(id), [id]);
@@ -37,6 +40,14 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
   const c = useController(sermon, settings, media);
   const { state, actions } = c;
   const [showKeys, setShowKeys] = useState(false);
+  const [showPrayer, setShowPrayer] = useState(false);
+  const [prayerTopic, setPrayerTopic] = useState<{ te: string; en: string }>({ te: "", en: "" });
+  const [prayerLeader, setPrayerLeader] = useState(settings.pastorName || sermon.speaker);
+  const showPrayerScreen = useCallback((topic?: { te: string; en: string }) => {
+    const tp = topic ?? prayerTopic;
+    setPrayerTopic(tp);
+    actions.prayer(tp, prayerLeader.trim());
+  }, [actions, prayerTopic, prayerLeader]);
 
   // Keyboard & presentation clicker (clickers send PageUp/PageDown)
   useEffect(() => {
@@ -50,6 +61,7 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
       else if (k === "l" || k === "L") actions.logo();
       else if (k === "c" || k === "C") actions.camera();
       else if (k === "t" || k === "T") actions.title();
+      else if (k === "r" || k === "R") { setShowPrayer(true); showPrayerScreen(); }
       else if (k === "Escape") actions.clear();
       else if (k === "n" || k === "N" || k === "ArrowDown") { e.preventDefault(); c.setPointIndex(Math.min(sermon.points.length - 1, c.pointIndex + 1)); }
       else if (k === "p" || k === "P" || k === "ArrowUp") { e.preventDefault(); c.setPointIndex(Math.max(0, c.pointIndex - 1)); }
@@ -61,7 +73,7 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [actions, c, sermon.points, sermon.verses]);
+  }, [actions, c, sermon.points, sermon.verses, showPrayerScreen]);
 
   const plannedMin = sermon.points.reduce((n, p) => n + (p.minutes ?? 0), 0);
   const over = plannedMin > 0 && c.elapsedSec > plannedMin * 60;
@@ -97,6 +109,7 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
       {/* Scene controls */}
       <div className="flex flex-wrap items-center gap-2 border-b border-slate-800 px-3 py-2">
         <button className={sceneBtn(k === "welcome")} onClick={actions.welcome} data-testid="btn-welcome"><Sparkles className="h-4 w-4" />{t("welcomeScreen")}</button>
+        <button className={sceneBtn(k === "prayer")} onClick={() => { setShowPrayer(!showPrayer || k !== "prayer"); showPrayerScreen(); }} data-testid="btn-prayer" title="R"><Flame className="h-4 w-4" />{t("prayer")}</button>
         <button className={sceneBtn(k === "blank")} onClick={actions.blank} data-testid="btn-blank"><Circle className="h-4 w-4 fill-current" />{t("blank")}</button>
         <button className={sceneBtn(k === "logo")} onClick={actions.logo}>✝ {t("logo")}</button>
         <button className={sceneBtn(k === "title")} onClick={actions.title}><Type className="h-4 w-4" />{t("showTitle")}</button>
@@ -112,6 +125,41 @@ function Console({ sermon, settings, media }: { sermon: Sermon; settings: Church
       </div>
 
       {showKeys && <ShortcutHelp onClose={() => setShowKeys(false)} />}
+      {showPrayer && (
+        <div className="flex flex-wrap items-start gap-4 border-b border-slate-800 bg-slate-900/80 px-3 py-3" data-testid="prayer-panel">
+          <Candle className="h-14 w-auto shrink-0" />
+          <div className="min-w-0 flex-1 space-y-2">
+            <div className="text-xs font-semibold uppercase tracking-wide text-slate-400">{t("prayerTopic")}</div>
+            <div className="flex flex-wrap gap-1.5">
+              {PRAYER_TOPICS.map((p) => {
+                const on = p.en === prayerTopic.en && p.te === prayerTopic.te && k === "prayer";
+                return (
+                  <button key={p.en || "none"} onClick={() => showPrayerScreen(p)} className={`rounded-full px-2.5 py-1 text-xs ${on ? "bg-gold-400 font-semibold text-stone-950" : "bg-slate-800 text-slate-200 hover:bg-slate-700"}`}>
+                    {p.en ? `${p.te} · ${p.en}` : t("noTopic")}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <input
+                className="min-w-56 flex-1 rounded-lg border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm outline-none focus:border-gold-400"
+                placeholder={t("customPrayerTopic")}
+                value={prayerTopic.te || prayerTopic.en}
+                onChange={(e) => setPrayerTopic(/[\u0C00-\u0C7F]/.test(e.target.value) ? { te: e.target.value, en: "" } : { te: "", en: e.target.value })}
+                onKeyDown={(e) => e.key === "Enter" && showPrayerScreen()}
+                aria-label={t("customPrayerTopic")}
+              />
+              <TeluguConvert value={prayerTopic.te || prayerTopic.en} onChange={(v) => setPrayerTopic({ te: v, en: "" })} />
+              <label className="flex items-center gap-1.5 text-xs text-slate-400">
+                {t("prayerLeader")}
+                <input className="w-48 rounded-lg border border-slate-700 bg-slate-950 px-2 py-1.5 text-sm text-slate-100 outline-none focus:border-gold-400" value={prayerLeader} onChange={(e) => setPrayerLeader(e.target.value)} onKeyDown={(e) => e.key === "Enter" && showPrayerScreen()} />
+              </label>
+              <button className="btn-primary" onClick={() => showPrayerScreen()} data-testid="prayer-show"><MonitorUp className="h-4 w-4" />{t("showOnScreen")}</button>
+              <button className="btn text-slate-400 hover:bg-slate-800" onClick={() => setShowPrayer(false)}>{t("close")}</button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main grid */}
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 overflow-y-auto p-3 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)_minmax(0,1fr)] lg:overflow-hidden">
@@ -480,6 +528,7 @@ function ShortcutHelp({ onClose }: { onClose: () => void }) {
     ["B or .", "Blank screen"],
     ["L", "Logo"],
     ["T", "Title slide"],
+    ["R", "Prayer screen"],
     ["C", "Camera"],
     ["Esc", "Clear (back to camera/logo)"],
   ];

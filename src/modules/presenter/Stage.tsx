@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import type { SlideVerse } from "@/lib/bible/slides";
 import type { DisplayState, Scene } from "./protocol";
 import { BrandBoard, LogoScene, ThemeBackground } from "./BrandBoard";
+import { PrayerScene } from "./PrayerScene";
 
 /**
  * Renders what the congregation sees. Used by the display window AND the
@@ -19,7 +20,7 @@ interface StageProps {
 
 export function Stage({ state, cameraStream, renderMedia }: StageProps) {
   const { scene } = state;
-  const showCameraBg = state.cameraOn && (scene.kind === "camera" || (scene.kind === "verse" && state.overlayOnCamera));
+  const showCameraBg = state.cameraOn && (scene.kind === "camera" || ((scene.kind === "verse" || scene.kind === "prayer") && state.overlayOnCamera));
   return (
     <div className="relative h-full w-full overflow-hidden bg-black text-white select-none" style={{ containerType: "size" }}>
       {/* Background layer */}
@@ -28,6 +29,7 @@ export function Stage({ state, cameraStream, renderMedia }: StageProps) {
       {scene.kind === "logo" && <LogoScene church={state.church} />}
       {scene.kind === "welcome" && <BrandBoard state={state} variant="welcome" />}
       {scene.kind === "ended" && <BrandBoard state={state} variant="ended" />}
+      {scene.kind === "prayer" && <PrayerScene state={state} scene={scene} overlay={showCameraBg} />}
       {scene.kind === "title" && <TitleScene title={scene.title} subtitle={scene.subtitle} />}
       {scene.kind === "verse" && <VerseScene scene={scene} state={state} overlay={showCameraBg} />}
       {scene.kind === "media" && renderMedia(scene)}

@@ -34,6 +34,8 @@ Legend: ✅ done · 🟡 partial · ⬜ not started
 - ⬜ Preview-before-live mode (stage the next item without showing it)
 - ✅ Church branding: gold emblem + wordmark, white & gold app theme, uploadable logo (D-013)
 - ✅ Welcome board before the sermon and thank-you board after it, with clock, date, greeting, rotating verses, pastor, address, YouTube QR (D-014)
+- ✅ Prayer screen: invitation to join in prayer, leader, topic presets, prayer verse; lower third over camera (D-015)
+- ⬜ Plan prayer moments in the sermon planner (topic + leader per pointer)
 - ⬜ YouTube channel link (needed for the QR code), plus optional co-pastor/leader names
 - ⬜ **Offline app start**: a service worker so the app opens with no internet. Bibles and media already work offline; the app pages need the local server, which is fine when running `npm start` on the church laptop
 - ⬜ Window Management permission prompt and guidance for placing the screen window automatically

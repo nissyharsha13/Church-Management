@@ -33,9 +33,21 @@
   --color-gold-950: #2e200a;
   --animate-shine: shine 6s ease-in-out infinite;
   --animate-fade-in: fade-in 1.2s ease-out both;
+  --animate-breathe: breathe 7s ease-in-out infinite;
+  --animate-flicker: flicker 2.6s ease-in-out infinite;
   @keyframes shine {
     0%, 100% { background-position: 0% 50%; }
     50% { background-position: 100% 50%; }
+  }
+  @keyframes breathe {
+    0%, 100% { opacity: 0.55; transform: scale(0.92); }
+    50% { opacity: 1; transform: scale(1.06); }
+  }
+  @keyframes flicker {
+    0%, 100% { transform: scale(1, 1) rotate(0deg); }
+    25% { transform: scale(0.97, 1.04) rotate(-1.5deg); }
+    50% { transform: scale(1.02, 0.97) rotate(1deg); }
+    75% { transform: scale(0.98, 1.03) rotate(-0.5deg); }
   }
   @keyframes fade-in {
     from { opacity: 0; transform: translateY(0.6cqh); }

@@ -50,6 +50,7 @@ The app is deployed on Vercel from the `main` branch; every push redeploys. Serm
 | ↓ / N, ↑ / P | Next / previous pointer |
 | B or . | Blank screen |
 | L / T / C | Logo / title slide / camera |
+| R | Prayer screen |
 | Esc | Clear (back to camera or logo) |
 
 ## Tests

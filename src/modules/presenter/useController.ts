@@ -278,6 +278,11 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
   const setOverlay = useCallback((on: boolean) => setState((s) => ({ ...s, overlayOnCamera: on })), [setState]);
   const setFontScale = useCallback((f: number) => setState((s) => ({ ...s, fontScale: Math.max(0.6, Math.min(1.6, Math.round(f * 10) / 10)) })), [setState]);
 
+  /** Prayer screen: invite everyone to join in prayer. Topic optional; leader defaults to the pastor. */
+  const prayer = useCallback((topic: { te: string; en: string }, leader: string) => {
+    setState((s) => ({ ...s, scene: { kind: "prayer", topicTe: topic.te, topicEn: topic.en, leader } }));
+    log("prayer", topic.en || topic.te);
+  }, [setState, log]);
   const welcome = useCallback(() => { setState((s) => ({ ...s, scene: { kind: "welcome" } })); log("welcome", ""); }, [setState, log]);
   /** Explicit start: timer runs and the title slide goes up. */
   const begin = useCallback(() => {
@@ -301,7 +306,7 @@ export function useController(sermon: Sermon, settings: ChurchSettings, media: M
     phase,
     elapsedSec: startedAt ? Math.max(0, Math.floor((now - startedAt) / 1000)) : 0,
     mediaById: new Map(media.map((m) => [m.id, m])),
-    actions: { begin, welcome, showVerse, showVerseCue, gotoSlide, setLanguageMode, showMedia, mediaCommand, clear, blank, logo, title, camera, setCameraOn, setCameraDevice, setOverlay, setFontScale, end },
+    actions: { begin, welcome, prayer, showVerse, showVerseCue, gotoSlide, setLanguageMode, showMedia, mediaCommand, clear, blank, logo, title, camera, setCameraOn, setCameraDevice, setOverlay, setFontScale, end },
   };
 }
 

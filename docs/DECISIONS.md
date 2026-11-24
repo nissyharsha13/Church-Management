@@ -59,3 +59,14 @@ Each entry says what we decided, why, and what would make us revisit it.
 - **Thank-you**: **End sermon** switches the screen to the thank-you board (gratitude / live-by-the-Word verses), which stays up until the screen window is closed.
 - **Verses**: welcome and ended verses (20 each, in `src/modules/presenter/occasion.ts`) rotate every 40 s, with a different starting verse each day.
 - **Profile**: the church profile lives in Settings, seeded from the YouTube banner (`DEFAULT_SETTINGS` in `src/lib/db.ts`). Another church only changes these fields.
+
+### D-015: Prayer screen
+- **What**: a **Prayer** scene (console button or **R**) invites the congregation to join in prayer while the pastor or a speaker prays:
+  - "మనం ప్రార్థన చేద్దాం · Let us pray"
+  - a gentle request to bow heads, close eyes and join in
+  - who is leading (defaults to the pastor; editable)
+  - an optional topic (presets in Telugu + English, or typed / converted to Telugu)
+  - a slowly rotating prayer verse
+- **Look**: a calm visual (candle with a breathing glow) rather than text-heavy slides, so the screen supports the prayer without competing with it.
+- **With the camera**: when the camera is the background and "Verses over camera" is on, it shows as a lower third, so people can still see who is praying.
+- **Timer**: showing the prayer screen does not start the sermon timer, because opening prayer often comes before the message.

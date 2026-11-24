@@ -7,11 +7,11 @@ import { ChurchLogo } from "@/components/ChurchLogo";
 import { formatReference } from "@/lib/bible/reference";
 import { usePassage } from "@/lib/bible/usePassage";
 import { translationLang } from "@/lib/bible/translations";
-import { ENDED_VERSES, greetingFor, MESSAGES, rotatingIndex, VERSE_ROTATE_MS, WELCOME_VERSES } from "./occasion";
+import { ENDED_VERSES, greetingFor, MESSAGES, quoted, rotatingIndex, VERSE_ROTATE_MS, WELCOME_VERSES } from "./occasion";
 import type { ChurchInfo, DisplayState } from "./protocol";
 
 /** Current time, ticking. null until mounted (never read the clock during prerender). */
-function useNow(intervalMs = 1000): number | null {
+export function useNow(intervalMs = 1000): number | null {
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
     const tick = () => setNow(Date.now());
@@ -117,8 +117,8 @@ export function BrandBoard({ state, variant }: { state: DisplayState; variant: "
           </div>
           {ref && (pText || sText) && (
             <div key={`${ref.book}${ref.chapter}${ref.start}`} className="animate-fade-in rounded-[1.4cqh] bg-white/[0.04] px-[2.4cqw] py-[2.2cqh] ring-1 ring-white/10" data-testid="board-verse">
-              {pText && <p lang="te" className="font-[family-name:var(--font-telugu)] leading-[1.5] text-white" style={{ fontSize: `${verseSize}cqh` }}>“{pText}”</p>}
-              {sText && <p className={`leading-[1.45] text-white/80 ${pText ? "mt-[1.4cqh]" : ""}`} style={{ fontSize: `${verseSize * 0.82}cqh` }}>“{sText}”</p>}
+              {pText && <p lang="te" className="font-[family-name:var(--font-telugu)] leading-[1.5] text-white" style={{ fontSize: `${verseSize}cqh` }}>{quoted(pText)}</p>}
+              {sText && <p className={`leading-[1.45] text-white/80 ${pText ? "mt-[1.4cqh]" : ""}`} style={{ fontSize: `${verseSize * 0.82}cqh` }}>{quoted(sText)}</p>}
               <div className="mt-[1.4cqh] text-[2.2cqh] font-semibold text-gold-300">
                 — {formatReference(ref, translationLang(translations.primary))}{showEn ? ` · ${formatReference(ref, "en")}` : ""}
               </div>
