@@ -99,6 +99,8 @@ Same as B, with these differences:
    - waits until YouTube is receiving video;
    - takes the broadcast live.
 
+   Each press of Go live after a stream has ended creates a **new** YouTube broadcast (YouTube can't restart an ended one).
+
    If **"Go live automatically"** is on in Settings, YouTube goes live by itself once video arrives.
 5. During the service, switch cameras with the scene buttons and mute or unmute mics from the console.
 6. **End sermon** asks whether to end the stream too, or press **End stream**. YouTube ends the broadcast, OBS stops, and **chapters** (Welcome, each verse, prayer, videos) are added to the video description automatically.
@@ -109,7 +111,8 @@ Same as B, with these differences:
 |---|---|
 | "Can't reach OBS" | OBS is closed, or WebSocket server isn't enabled (B2), or Chrome's local-network prompt was blocked (site settings → allow) |
 | "Wrong OBS password" | Copy the password again from OBS → Tools → WebSocket Server Settings |
-| "YouTube hasn't received video after 90 seconds" | Check OBS shows *LIVE* at the bottom; check the internet; press **Send YouTube key to OBS** again |
+| "Waiting for video. OBS isn't connected to the console" | Press **Connect OBS** in the Live stream panel (OBS must be open on the same computer), or click **Start Streaming** in OBS yourself. Go live continues as soon as video arrives |
+| "No video reached YouTube in 2 minutes" | Check OBS shows *LIVE* at the bottom; check the internet; press **Send YouTube key to OBS** again |
 | "Live streaming isn't enabled" | YouTube Studio → Create → Go live (wait up to 24 h the first time) |
 | YouTube shows a **black picture** but audio works | OBS is sending an empty or blocked picture. Check the console's **"What YouTube sees · OBS"** preview, then see *Black picture on YouTube* below |
 | "YouTube sign-in expired" | Settings → Live streaming → Disconnect → Connect YouTube. Make sure step A6 (publish) was done |
@@ -129,4 +132,9 @@ YouTube shows exactly what OBS's **Program** shows. The church presentation scre
    - **macOS Screen Capture** (Mac) or **Window Capture** (Windows) → Method/Type **Window** → choose the Chrome window **"Presentation Screen — Divine Church"**.
      - If you use the camera too, drag the screen capture above the camera and resize it.
      - Or use **Display Capture** of the projector monitor to send exactly what the hall sees.
+   **Mac: macOS Screen Capture shows grey** for the Chrome window:
+   - The window must not be in full screen (macOS puts full-screen windows on their own Space and OBS then sees grey). In the presentation window press **F** to leave full screen. Don't minimise it either.
+   - In System Settings → Privacy & Security → **Screen & System Audio Recording**, select OBS, remove it with **–**, add it again with **+**, then **quit and reopen OBS** (a permission granted while OBS was open often shows grey until the restart).
+   - In the source, set **Method: Window Capture** and pick the window again from the list after restarting. If it's still grey, try **Method: Display Capture** to confirm the permission works.
+   - Chrome → Settings → System → **Use graphics acceleration** on (the default). Then restart Chrome.
 4. Switch scenes from the console and watch the thumbnail change. When it isn't black, YouTube isn't either (YouTube runs about 10–20 seconds behind).

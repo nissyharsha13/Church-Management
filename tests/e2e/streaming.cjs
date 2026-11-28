@@ -135,6 +135,17 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     const chapters = mocks.state.description.split("— Chapters · అధ్యాయాలు —")[1] || "";
     ok(/0:00 Welcome/.test(chapters) && chapters.trim().split("\n").length >= 3, "chapters added to the YouTube description from what was shown");
     console.log(chapters.trim().split("\n").slice(0, 5).map((l) => `      ${l}`).join("\n"));
+
+    // 8. Go live again after the broadcast ended: an ended broadcast can't restart,
+    //    so the console must create a fresh one instead of waiting on the old one.
+    const firstId = mocks.state.broadcast.id;
+    await panel.getByTestId("go-live").click();
+    await panel.getByText("LIVE", { exact: true }).first().waitFor({ timeout: 30000 });
+    for (let i = 0; i < 40 && mocks.state.broadcast.status.lifeCycleStatus !== "live"; i++) await wait(500);
+    ok(mocks.state.broadcast.id !== firstId && mocks.state.broadcast.status.lifeCycleStatus === "live", "Go live after an ended stream creates a new broadcast and goes live");
+    page.once("dialog", (d) => d.accept());
+    await panel.getByTestId("end-stream").click();
+    await panel.getByText("ENDED", { exact: true }).waitFor({ timeout: 20000 });
   } catch (e) {
     console.log("FAIL  " + e.message.split("\n")[0]);
     process.exitCode = 1;

@@ -8,7 +8,7 @@ import type { Sermon } from "@/modules/sermons/types";
 import { buildChapters } from "./chapters";
 import { broadcastDescription, broadcastTitle } from "./description";
 import type { Obs } from "./useObs";
-import { explain, youtube, type BroadcastStatus, type YouTubeStatus } from "./youtubeClient";
+import { ApiError, explain, youtube, type BroadcastStatus, type YouTubeStatus } from "./youtubeClient";
 
 export type LivePhase = "idle" | "starting" | "live" | "ending" | "ended";
 
@@ -49,14 +49,29 @@ export function useLiveStream(sermon: Sermon, getEvents: () => { t: number; kind
   const ytLive = status?.lifeCycleStatus === "live" || status?.lifeCycleStatus === "liveStarting";
   const isLive = ytLive || obs.stream.active;
 
+  // Latest OBS state, so a running "Go live" sees OBS being connected or started meanwhile.
+  const obsRef = useRef(obs);
+  useEffect(() => { obsRef.current = obs; }, [obs]);
+
   const goLive = useCallback(async () => {
     setError(null);
     cancel.current = false;
     setPhase("starting");
     try {
-      // 1. Broadcast (create now if it wasn't scheduled in the planner).
-      let id = broadcastId;
+      if (!yt?.connected) throw new Error("Connect the church's YouTube channel in Settings first.");
       const church = await getSettings();
+      // 1. Broadcast. Re-use the sermon's broadcast only while it can still go live:
+      //    an ended (complete) or deleted one can never be restarted, so make a fresh one.
+      let id = broadcastId;
+      if (id) {
+        setMessage("Checking the YouTube broadcast…");
+        const cur = await youtube.broadcast(id).catch((e) => {
+          if (e instanceof ApiError && e.status === 404) return null;
+          throw e;
+        });
+        if (!cur || cur.lifeCycleStatus === "complete" || cur.lifeCycleStatus === "revoked") id = null;
+        else setStatus(cur);
+      }
       if (!id) {
         setMessage("Creating the YouTube broadcast…");
         const b = await youtube.createBroadcast({
@@ -69,29 +84,56 @@ export function useLiveStream(sermon: Sermon, getEvents: () => { t: number; kind
         await db.sermons.update(sermon.id, { youtube: { broadcastId: b.id, url: b.url, studioUrl: b.studioUrl, privacy: b.privacy, scheduledStart: b.scheduledStart } });
         id = b.id;
       }
-      // 2. Encoder: load the key into OBS and start streaming (or ask the operator).
-      if (obs.status === "connected") {
-        setMessage("Starting OBS…");
+      // 2. Encoder: load the key into OBS and start it. If OBS isn't connected yet,
+      //    keep checking: the operator can press "Connect OBS" or start OBS by hand.
+      let obsStarted = false;
+      const startObs = async () => {
+        const o = obsRef.current;
+        if (obsStarted || o.status !== "connected") return;
+        obsStarted = true;
+        setMessage("Loading the YouTube key into OBS…");
         const ingest = await youtube.ingest();
-        await obs.setYouTubeTarget(ingest.rtmpsServer, ingest.key);
-        if (!obs.stream.active) await obs.startStream();
-      } else {
-        setMessage("Start streaming in OBS now (OBS isn't connected to the console).");
-      }
+        await o.setYouTubeTarget(ingest.rtmpsServer, ingest.key);
+        if (!o.stream.active) { setMessage("Starting OBS streaming…"); await o.startStream(); }
+      };
+      await startObs();
       // 3. Wait for YouTube to receive video, then go live.
-      setMessage("Waiting for YouTube to receive video…");
-      const deadline = Date.now() + 90_000;
+      const deadline = Date.now() + 120_000;
       for (;;) {
         if (cancel.current) { setPhase("idle"); setMessage(null); return; }
+        await startObs();
         const s = await refresh(id);
         if (s && (s.lifeCycleStatus === "live" || s.lifeCycleStatus === "liveStarting")) break;
         if (s?.streamStatus === "active") {
-          setMessage("Going live…");
-          await youtube.transition(id, "live");
-          await refresh(id);
-          break;
+          setMessage("YouTube is receiving video — going live…");
+          try {
+            await youtube.transition(id, "live");
+            await refresh(id);
+            break;
+          } catch (e) {
+            // Right after video arrives YouTube can still refuse for a few seconds; retry.
+            if (!(e instanceof ApiError && e.code === "no_signal")) throw e;
+          }
+        } else {
+          const o = obsRef.current;
+          setMessage(
+            o.status !== "connected"
+              ? "Waiting for video. OBS isn't connected to the console: press “Connect OBS” below, or click “Start Streaming” in OBS."
+              : !o.stream.active
+                ? "Waiting for OBS to start streaming…"
+                : "OBS is streaming — waiting for YouTube to receive the video (10–30 seconds)…",
+          );
         }
-        if (Date.now() > deadline) throw new Error("YouTube hasn't received video after 90 seconds. Check OBS is streaming and the internet connection, then press Go live again.");
+        if (Date.now() > deadline) {
+          const o = obsRef.current;
+          throw new Error(
+            o.status !== "connected"
+              ? "No video reached YouTube in 2 minutes. OBS isn't connected to the console — connect it (Settings → Live streaming → OBS), or start streaming in OBS, then press Go live again."
+              : !o.stream.active
+                ? "OBS didn't start streaming. Check OBS for an error, then press Go live again."
+                : "OBS is streaming but YouTube received no video in 2 minutes. In Settings press “Send YouTube key to OBS”, check the internet, then press Go live again.",
+          );
+        }
         await new Promise((r) => setTimeout(r, 3000));
       }
       setPhase("live");
@@ -101,7 +143,7 @@ export function useLiveStream(sermon: Sermon, getEvents: () => { t: number; kind
       setMessage(null);
       setError(explain(e));
     }
-  }, [broadcastId, obs, refresh, sermon]);
+  }, [broadcastId, yt?.connected, refresh, sermon]);
 
   const endStream = useCallback(async () => {
     cancel.current = true;

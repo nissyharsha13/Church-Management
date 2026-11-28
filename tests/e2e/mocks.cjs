@@ -46,12 +46,13 @@ function startMocks({ googlePort = 3201, obsPort = 3202 } = {}) {
       if (path === "liveStreams") return json(res, 200, { items: url.searchParams.get("id") === "stream-1" ? [streamItem()] : [] });
       if (path === "liveBroadcasts" && req.method === "POST") {
         const b = JSON.parse(body);
-        state.broadcast = { id: "bc-1", snippet: { ...b.snippet }, status: { lifeCycleStatus: "ready", privacyStatus: b.status.privacyStatus }, contentDetails: { ...b.contentDetails, boundStreamId: "stream-1" } };
+        state.broadcasts = (state.broadcasts || 0) + 1;
+        state.broadcast = { id: `bc-${state.broadcasts}`, snippet: { ...b.snippet }, status: { lifeCycleStatus: "ready", privacyStatus: b.status.privacyStatus }, contentDetails: { ...b.contentDetails, boundStreamId: "stream-1" } };
         state.description = b.snippet.description;
-        return json(res, 200, { id: "bc-1" });
+        return json(res, 200, { id: state.broadcast.id });
       }
-      if (path === "liveBroadcasts/bind") return json(res, 200, { id: "bc-1" });
-      if (path === "liveBroadcasts") return json(res, 200, { items: state.broadcast && url.searchParams.get("id") === "bc-1" ? [state.broadcast] : [] });
+      if (path === "liveBroadcasts/bind") return json(res, 200, { id: state.broadcast?.id });
+      if (path === "liveBroadcasts") return json(res, 200, { items: state.broadcast && url.searchParams.get("id") === state.broadcast.id ? [state.broadcast] : [] });
       if (path === "liveBroadcasts/transition") {
         const to = url.searchParams.get("broadcastStatus");
         if (to === "live" && !state.obsStreaming) return ytErr(res, 403, "invalidTransition", "stream inactive");
