@@ -54,6 +54,10 @@ export function useObs({ autoConnect = false }: { autoConnect?: boolean } = {}) 
   const [audio, setAudio] = useState<ObsAudio[]>([]);
   const [levels, setLevels] = useState<Record<string, number>>({});
   const [stream, setStream] = useState<ObsStream>({ active: false, kbps: 0, droppedPct: 0, congestion: 0, durationMs: 0 });
+  /** Small JPEG (data URL) of OBS's current program scene — exactly what goes to YouTube. */
+  const [preview, setPreview] = useState<string | null>(null);
+  const currentSceneRef = useRef<string | null>(null);
+  useEffect(() => { currentSceneRef.current = currentScene; }, [currentScene]);
 
   const obs = useRef<OBSWebSocketType | null>(null);
   const wanted = useRef(false);
@@ -160,7 +164,16 @@ export function useObs({ autoConnect = false }: { autoConnect?: boolean } = {}) 
         });
       } catch { /* transient */ }
     }, 2000);
-    return () => { clearInterval(meters); clearInterval(stats); };
+    const shots = setInterval(async () => {
+      const o = obs.current;
+      const scene = currentSceneRef.current;
+      if (!o || !scene) return;
+      try {
+        const r = await o.call("GetSourceScreenshot", { sourceName: scene, imageFormat: "jpg", imageWidth: 320, imageCompressionQuality: 55 });
+        setPreview(r.imageData);
+      } catch { setPreview(null); }
+    }, 2000);
+    return () => { clearInterval(meters); clearInterval(stats); clearInterval(shots); };
   }, [status]);
 
   useEffect(() => {
@@ -177,7 +190,7 @@ export function useObs({ autoConnect = false }: { autoConnect?: boolean } = {}) 
   }, []);
 
   return {
-    status, error, scenes, currentScene, audio, levels, stream,
+    status, error, scenes, currentScene, audio, levels, stream, preview,
     connect, disconnect,
     setScene: (sceneName: string) => call((o) => o.call("SetCurrentProgramScene", { sceneName })),
     toggleMute: (inputName: string) => call((o) => o.call("ToggleInputMute", { inputName })),

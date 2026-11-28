@@ -111,4 +111,22 @@ Same as B, with these differences:
 | "Wrong OBS password" | Copy the password again from OBS → Tools → WebSocket Server Settings |
 | "YouTube hasn't received video after 90 seconds" | Check OBS shows *LIVE* at the bottom; check the internet; press **Send YouTube key to OBS** again |
 | "Live streaming isn't enabled" | YouTube Studio → Create → Go live (wait up to 24 h the first time) |
+| YouTube shows a **black picture** but audio works | OBS is sending an empty or blocked picture. Check the console's **"What YouTube sees · OBS"** preview, then see *Black picture on YouTube* below |
 | "YouTube sign-in expired" | Settings → Live streaming → Disconnect → Connect YouTube. Make sure step A6 (publish) was done |
+
+### Black picture on YouTube (audio works)
+
+YouTube shows exactly what OBS's **Program** shows. The church presentation screen is a separate Chrome window; OBS must **capture** it.
+
+1. **Look at OBS's main preview.** If it's black there, it's black on YouTube. The console's *"What YouTube sees · OBS"* thumbnail shows the same.
+2. **Mac: allow OBS** in **System Settings → Privacy & Security**:
+   - **Camera** → turn on **OBS**
+   - **Screen & System Audio Recording** → turn on **OBS**
+
+   Then **quit and reopen OBS**. Without these, video sources show black while microphones still work.
+3. **Add sources to the scene that is live** (the scene highlighted red in the console). In OBS, click that scene, then under **Sources** click **+**:
+   - **Video Capture Device** → choose your camera.
+   - **macOS Screen Capture** (Mac) or **Window Capture** (Windows) → Method/Type **Window** → choose the Chrome window **"Presentation Screen — Divine Church"**.
+     - If you use the camera too, drag the screen capture above the camera and resize it.
+     - Or use **Display Capture** of the projector monitor to send exactly what the hall sees.
+4. Switch scenes from the console and watch the thumbnail change. When it isn't black, YouTube isn't either (YouTube runs about 10–20 seconds behind).

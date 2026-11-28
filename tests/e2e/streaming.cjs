@@ -105,6 +105,10 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
     ok(mocks.state.muted["Pulpit mic"] === true, "muting a mic from the console mutes it in OBS");
     await wait(300);
     ok(await panel.getByTestId("obs-audio").count() === 2, "console lists mics with level meters");
+    await panel.getByTestId("obs-preview").locator("img").waitFor({ timeout: 8000 });
+    ok(true, "console shows what OBS is sending to YouTube");
+    await panel.getByTestId("obs-black-warning").waitFor({ timeout: 8000 });
+    ok(true, "console warns when OBS is sending a black picture");
 
     // 6. Go live
     await panel.getByTestId("go-live").click();

@@ -52,6 +52,11 @@ export default function DisplayPage() {
   }, []);
 
   useEffect(() => {
+    // Distinct window title, so it's easy to pick in OBS (Window Capture / macOS Screen Capture).
+    document.title = "Presentation Screen — Divine Church";
+  }, []);
+
+  useEffect(() => {
     const onFs = () => setFullscreen(!!document.fullscreenElement);
     document.addEventListener("fullscreenchange", onFs);
     const onKey = (e: KeyboardEvent) => { if (e.key === "f" || e.key === "F") toggleFullscreen(); };

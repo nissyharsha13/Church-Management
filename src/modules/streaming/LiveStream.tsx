@@ -185,6 +185,9 @@ export function StreamPanel({ live, obs, sermon }: { live: LiveStream; obs: Obs;
             )}
           </div>
           {obs.status === "error" && <p className="text-xs text-red-400">{obs.error}</p>}
+          {obs.status === "connected" && (
+            <ObsPreview src={obs.preview} scene={obs.currentScene} />
+          )}
           {obs.status === "connected" && obs.scenes.length > 0 && (
             <div className="flex flex-wrap gap-1" role="group" aria-label="OBS scenes">
               {obs.scenes.map((sc) => (
@@ -230,6 +233,45 @@ export function StreamPanel({ live, obs, sermon }: { live: LiveStream; obs: Obs;
         {live.error && <p className="text-xs text-red-400" role="alert">{live.error}</p>}
       </div>
     </section>
+  );
+}
+
+/** Thumbnail of OBS's program output, with a warning when it is black. */
+function ObsPreview({ src, scene }: { src: string | null; scene: string | null }) {
+  const [dark, setDark] = useState(false);
+  useEffect(() => {
+    if (!src) return;
+    let alive = true;
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement("canvas");
+      c.width = 32; c.height = 18;
+      const ctx = c.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0, 32, 18);
+      const d = ctx.getImageData(0, 0, 32, 18).data;
+      let sum = 0;
+      for (let i = 0; i < d.length; i += 4) sum += d[i] + d[i + 1] + d[i + 2];
+      if (alive) setDark(sum / (d.length / 4) / 3 < 8); // average brightness out of 255
+    };
+    img.src = src;
+    return () => { alive = false; };
+  }, [src]);
+  return (
+    <div data-testid="obs-preview">
+      <div className="mb-1 flex items-center justify-between text-[10px] uppercase tracking-wide text-slate-500">
+        <span>What YouTube sees · OBS</span><span className="normal-case tracking-normal">{scene}</span>
+      </div>
+      <div className="aspect-video overflow-hidden rounded-md bg-black ring-1 ring-slate-700">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        {src ? <img src={src} alt="OBS program output" className="h-full w-full object-contain" /> : <div className="flex h-full items-center justify-center text-xs text-slate-600">No preview</div>}
+      </div>
+      {src && dark && (
+        <p className="mt-1 text-xs text-amber-300" data-testid="obs-black-warning">
+          OBS is sending a black picture. In OBS, add a camera / screen capture to “{scene}”, and on a Mac allow OBS in System Settings → Privacy &amp; Security → Camera and Screen Recording.
+        </p>
+      )}
+    </div>
   );
 }
 
