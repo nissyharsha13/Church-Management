@@ -29,7 +29,7 @@ export async function proxy(req: NextRequest) {
 
 export const config = {
   matcher: [
-    // Everything except: login page + login/logout API, Next static files, public Bible data, public branding, favicon.
-    "/((?!login|api/auth/login|api/auth/logout|_next/static|_next/image|bibles/|branding/|favicon.ico).*)",
+    // Everything except: login, privacy and terms pages + login/logout API, Next static files, public Bible data, public branding, favicon.
+    "/((?!login|privacy|terms|api/auth/login|api/auth/logout|_next/static|_next/image|bibles/|branding/|favicon.ico).*)",
   ],
 };

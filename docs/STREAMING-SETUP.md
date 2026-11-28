@@ -20,9 +20,13 @@ Do this with the Google account that **owns or manages the church YouTube channe
 
 1. Open **https://console.cloud.google.com** → project menu → **New project** → name it `Divine Church App` → **Create**.
 2. **APIs & Services → Library** → search **YouTube Data API v3** → **Enable**.
-3. **APIs & Services → OAuth consent screen** (also called "Google Auth Platform"):
+3. **APIs & Services → OAuth consent screen** (also called "Google Auth Platform"; direct link https://console.cloud.google.com/auth/audience):
    - User type: **External** → Create.
-   - App name: `Divine Church`; support email: your email; developer contact: your email.
+   - **Branding**: App name `Divine Church`; user support email and developer contact: your email;
+     home page `https://church-management-xi.vercel.app`; privacy policy `https://church-management-xi.vercel.app/privacy`;
+     terms `https://church-management-xi.vercel.app/terms`; authorized domain `church-management-xi.vercel.app`.
+     **Leave the logo empty.** A logo triggers Google's brand verification, which takes weeks.
+     The **Publish app** button stays disabled until these are filled in.
    - **Scopes**: add `https://www.googleapis.com/auth/youtube`.
    - **Test users**: add the Google account that manages the channel.
 4. **APIs & Services → Credentials → Create credentials → OAuth client ID**:
